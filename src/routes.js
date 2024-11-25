@@ -57,6 +57,26 @@ const routes = [
     routes: [
       {
         exact: 'true',
+        path: '/admin/soal',
+        element: lazy(() => import('./views/soal/BuatSoal'))
+      },
+      {
+        exact: 'true',
+        path: '/admin/test',
+        element: lazy(() => import('./views/soal/InputTestAdmin'))
+      },
+      {
+        exact: 'true',
+        path: '/soal',
+        element: lazy(() => import('./views/soal/Soal'))
+      },
+      {
+        exact: 'true',
+        path: '/test',
+        element: lazy(() => import('./views/soal/SoalCode'))
+      },
+      {
+        exact: 'true',
         path: '/app/dashboard/default',
         element: lazy(() => import('./views/dashboard'))
       },

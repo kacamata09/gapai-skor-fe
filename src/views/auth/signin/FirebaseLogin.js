@@ -6,6 +6,37 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 const FirebaseLogin = ({ className, ...rest }) => {
+
+  // const [usernamee, setUsernamee] = useState("")
+  // const [passwordd, setPassword] = useState("")
+
+  // const handleLogin = async (e) => {
+
+  //   e.preventDefault();
+  //   if (!usernamee || !passwordd) {
+  //     setError('Please fill in all fields');
+  //   } else {
+  //     console.log('');
+  //     try {
+  //       const response = await apiClient.post('/auth/login', {
+  //         username : usernamee,
+  //         password : passwordd
+  //       })
+  //       console.log(response.data.data.accessToken)
+  //       const token = response.data.data.accessToken;
+  //       console.log(token)
+  //       localStorage.setItem('accessToken', token);
+  //       console.log('Login successful, token:', token);
+  //       // Redirect or do something after successful login
+  //       navigate('/')
+  //     } catch (error) {
+  //       console.log('Login failed. Please check your credentials and try again.');
+  //       console.error('Error during login:', error);
+  //     }
+  //   }
+    
+  // }
+
   return (
     <React.Fragment>
       <Formik
