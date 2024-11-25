@@ -1,13 +1,16 @@
 import React from 'react';
 import { Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const InputCodeSoal = () => {
-  const buttons = [
-    { variant: 'primary', label: 'Klaim Sertifikat Tes Sebelumnya', icon: 'feather icon-check' },
-    { variant: 'secondary', label: 'Lihat Riwayat Tes', icon: 'feather icon-eye' },
-  ];
+  const navigate = useNavigate()
 
-  return (
+  const buttons = [
+    { variant: 'primary', label: 'Klaim Sertifikat Tes Sebelumnya', icon: 'feather icon-check', link: "https://api.whatsapp.com/send?phone=6285795596736" },
+    { variant: 'secondary', label: 'Lihat Riwayat Tes', icon: 'feather icon-eye', link: "/riwayat_test" },
+  ];
+        
+  return ( 
     <React.Fragment>
       <Row className="mb-4">
         {/* Kartu Masukkan Kode */}
@@ -48,6 +51,14 @@ const InputCodeSoal = () => {
             <Card.Body className="d-flex flex-column justify-content-center">
               {buttons.map((button, idx) => (
                 <Button
+                  onClick={(e)=> {
+                    e.preventDefault()
+                    if (button.link.startsWith("http")) {
+                      window.location.href = button.link; // Arahkan ke tautan sertifikat
+                    } else {
+                      navigate(button.link)
+                    }
+                  }}
                   key={idx}
                   variant={button.variant}
                   className="mb-2 d-flex align-items-center justify-content-center"

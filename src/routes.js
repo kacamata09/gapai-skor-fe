@@ -77,6 +77,11 @@ const routes = [
       },
       {
         exact: 'true',
+        path: '/riwayat_test',
+        element: lazy(() => import('./views/soal/RiwayatTest'))
+      },
+      {
+        exact: 'true',
         path: '/app/dashboard/default',
         element: lazy(() => import('./views/dashboard'))
       },

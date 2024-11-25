@@ -7,11 +7,11 @@ import { Row, Col, Card } from 'react-bootstrap';
 // import avatar3 from '../../assets/images/user/avatar-3.jpg';
 
 const dashSalesData = [
-  { title: 'Soal Dikerjakan', amount: '$249.95', icon: 'text-c-green', value: 50, class: 'progress-c-theme' },
-  // { title: 'Soal Berjalan', amount: '$2.942.32', icon: 'icon-arrow-down text-c-red', value: 36, class: 'progress-c-theme2' },
-  { title: 'Total Soal', amount: '$8.638.32', icon: 'text-c-green', value: 70, color: 'progress-c-theme' },
-  { title: 'Total Soal', amount: '$8.638.32', icon: 'text-c-green', value: 70, color: 'progress-c-theme' },
-  { title: 'Total Soal', amount: '$8.638.32', icon: 'text-c-green', value: 70, color: 'progress-c-theme' }
+  { title: 'Total Test Dikerjakan', amount: '30', icon: 'text-c-green', class: 'progress-c-theme' },
+  // { title: 'Soal Berjalan', amount: '2.942.32', icon: 'icon-arrow-down text-c-red', class: 'progress-c-theme2' },
+  { title: 'Total Sertifikat Diklaim', amount: '20', icon: 'text-c-green', color: 'progress-c-theme' },
+  { title: 'Nilai TOEFL Tertiggi', amount: '502', icon: 'text-c-green', color: 'progress-c-theme' },
+  { title: 'Test MBTI', amount: 'INTP', icon: 'text-c-green', color: 'progress-c-theme' }
 ];
 
 const DashDefault = () => {
@@ -20,18 +20,15 @@ const DashDefault = () => {
       <Row>
         {dashSalesData.map((data, index) => {
           return (
-            <Col key={index} xl={6} xxl={4}>
+            <Col key={index} xl={6} xxl={3} md={3}>
               <Card>
                 <Card.Body>
-                  <h6 className="mb-4">{data.title}</h6>
+                  <h4 className="mb-4">{data.title}</h4>
                   <div className="row d-flex align-items-center">
                     <div className="col-9">
                       <h3 className="f-w-300 d-flex align-items-center m-b-0">
-                        <i className={`feather ${data.icon} f-30 m-r-5`} /> $249.95
+                        <i className={`feather {data.icon} f-30 m-r-5`} /> {data.amount}
                       </h3>
-                    </div>
-                    <div className="col-3 text-end">
-                      <p className="m-b-0">{data.value}%</p>
                     </div>
                   </div>
                 </Card.Body>
