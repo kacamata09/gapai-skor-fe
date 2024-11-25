@@ -7,11 +7,11 @@ import { Row, Col, Card } from 'react-bootstrap';
 // import avatar3 from '../../assets/images/user/avatar-3.jpg';
 
 const dashSalesData = [
-  { title: 'Soal Dikerjakan', amount: '$249.95', icon: 'icon-arrow-up text-c-green', value: 50, class: 'progress-c-theme' },
-  { title: 'Soal Berjalan', amount: '$2.942.32', icon: 'icon-arrow-down text-c-red', value: 36, class: 'progress-c-theme2' },
-  { title: 'Total Soal', amount: '$8.638.32', icon: 'icon-arrow-up text-c-green', value: 70, color: 'progress-c-theme' },
-  { title: 'Total Soal', amount: '$8.638.32', icon: 'icon-arrow-up text-c-green', value: 70, color: 'progress-c-theme' },
-  { title: 'Total Soal', amount: '$8.638.32', icon: 'icon-arrow-up text-c-green', value: 70, color: 'progress-c-theme' }
+  { title: 'Soal Dikerjakan', amount: '$249.95', icon: 'text-c-green', value: 50, class: 'progress-c-theme' },
+  // { title: 'Soal Berjalan', amount: '$2.942.32', icon: 'icon-arrow-down text-c-red', value: 36, class: 'progress-c-theme2' },
+  { title: 'Total Soal', amount: '$8.638.32', icon: 'text-c-green', value: 70, color: 'progress-c-theme' },
+  { title: 'Total Soal', amount: '$8.638.32', icon: 'text-c-green', value: 70, color: 'progress-c-theme' },
+  { title: 'Total Soal', amount: '$8.638.32', icon: 'text-c-green', value: 70, color: 'progress-c-theme' }
 ];
 
 const DashDefault = () => {
