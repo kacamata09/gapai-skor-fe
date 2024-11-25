@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
 
 const Soal = () => {
@@ -6,90 +6,90 @@ const Soal = () => {
     {
       id: 1,
       title: "Listening",
-      parts: [
+      questions: [
         {
-          partTitle: "Part A",
-          questions: [
-           
-            { id: 1, text: "Question 1A", options: ["A", "B", "C"],  audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", selectedAnswer: null },
-            { id: 2, text: "Question 2A", options: ["A", "B", "C"], selectedAnswer: null },
-          ],
+          questionNumber: 1,
+          id: 1,
+          text: "What audio said?",
+          audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Link contoh audio
+          image: 'https://www.researchgate.net/publication/327267367/figure/fig1/AS:664590664880143@1535462170643/Reading-section-directions-for-TOEFL-iBT-on-the-computer-screen-passage-are-also.png',
+          options: ["Option A", "Option B", "Option C"],
+          selectedAnswer: null,
         },
         {
-          partTitle: "Part B",
-          questions: [
-            { id: 3, text: "Question 1B", options: ["A", "B", "C"], selectedAnswer: null },
-            { id: 4, text: "Question 2B", options: ["A", "B", "C"], selectedAnswer: null },
-          ],
+          questionNumber: 2,
+          id: 2,
+          text: "Choose the correct option:",
+          options: ["Option 1", "Option 2", "Option 3"],
+          selectedAnswer: null,
         },
       ],
     },
     {
       id: 2,
       title: "Structure",
-      parts: [
+      questions: [
         {
-          partTitle: "Part A",
-          questions: [
-            { id: 1, text: "Identify the correct synonym of 'Happy'", options: ["Sad", "Joyful", "Angry"], selectedAnswer: null },
-          ],
+          questionNumber: 1,
+          id: 1,
+          text: "Identify the synonym of 'happy':",
+          image: "https://via.placeholder.com/150", // Contoh gambar
+          options: ["Sad", "Joyful", "Angry"],
+          selectedAnswer: null,
         },
       ],
     },
     {
       id: 3,
       title: "Reading",
-      parts: [
+      questions: [
         {
-          partTitle: "Part A",
-          questions: [
-            { id: 1, text: "Complete the sentence: 'She is ____ than her brother.'", options: ["taller", "shorter", "older"], selectedAnswer: null },
-          ],
+          questionNumber: 1,
+          id: 1,
+          text: "Complete the sentence: 'She is ____ than her brother.'",
+          options: ["taller", "shorter", "older"],
+          selectedAnswer: null,
         },
       ],
     },
   ]);
+  
 
   const [currentSessionIndex, setCurrentSessionIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(120 * 60); // Timer untuk sesi
+  const [timeLeft, setTimeLeft] = useState(7200); // Durasi 120 menit dalam detik
 
-  useEffect(() => {
-    const timerInterval = setInterval(() => {
+  React.useEffect(() => {
+    const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timerInterval); // Hentikan timer jika habis
-          setShowModal(true); // Tampilkan modal waktu habis
+        if (prevTime <= 0) {
+          clearInterval(timer);
+          setShowModal(true);
           return 0;
         }
         return prevTime - 1;
       });
     }, 1000);
-
-    return () => clearInterval(timerInterval);
+    return () => clearInterval(timer);
   }, []);
 
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes < 10 ? "0" : ""}${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
   };
 
-  const handleAnswerChange = (sessionId, partIndex, questionId, answer) => {
+  const handleAnswerChange = (sessionId, questionId, answer) => {
     const updatedSessions = sessions.map((session) => {
       if (session.id === sessionId) {
-        const updatedParts = session.parts.map((part, index) => {
-          if (index === partIndex) {
-            const updatedQuestions = part.questions.map((question) =>
-              question.id === questionId
-                ? { ...question, selectedAnswer: answer }
-                : question
-            );
-            return { ...part, questions: updatedQuestions };
-          }
-          return part;
-        });
-        return { ...session, parts: updatedParts };
+        const updatedQuestions = session.questions.map((question) =>
+          question.id === questionId
+            ? { ...question, selectedAnswer: answer }
+            : question
+        );
+        return { ...session, questions: updatedQuestions };
       }
       return session;
     });
@@ -100,7 +100,7 @@ const Soal = () => {
     if (currentSessionIndex < sessions.length - 1) {
       setCurrentSessionIndex(currentSessionIndex + 1);
     } else {
-      setShowModal(true); // Menampilkan modal jika sesi terakhir selesai
+      setShowModal(true); // Menampilkan popup saat sesi terakhir selesai
     }
   };
 
@@ -115,75 +115,95 @@ const Soal = () => {
   return (
     <React.Fragment>
       <Row>
-        <Col sm={12} className="mb-3">
-          <Card>
-            <Card.Body className="p-2">
-              <h5 className="mb-0">Waktu Anda Tersisa: {formatTime(timeLeft)}</h5>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
-      <Row>
         <Col sm={12}>
+          <div style={{ textAlign: "left", marginBottom: "10px" }}>
+            <h4>
+
+            <strong className="text-unmuted">Waktu tersisa: {formatTime(timeLeft)}</strong>
+            </h4>
+          </div>
           <Card className="text-unmuted">
             <Card.Header>
               <Card.Title as="h5">{currentSession.title}</Card.Title>
             </Card.Header>
             <Card.Body>
-              {currentSession.parts.map((part, partIndex) => (
-                <div key={partIndex} className="mb-4">
-                  <h3>{part.partTitle}</h3>
-                  {part.questions.map((question) => (
-                    <div key={question.id} className="mb-3">
-                      <Card.Text>{question.text}</Card.Text>
-                      <Form.Group>
-                      {question.audio && (
-                    <audio controls className="mb-3">
-                      <source src={question.audio} type="audio/mpeg" />
-                      <track kind="captions" srcLang="en" label="English captions" />
-                      Your browser does not support the audio element.
-                    </audio>
-                      )}
-                        {question.options.map((option, index) => (
-                          <Form.Check
-                            key={index}
-                            type="radio"
-                            label={option}
-                            name={`session-${currentSession.id}-part-${partIndex}-question-${question.id}`}
-                            id={`session-${currentSession.id}-part-${partIndex}-question-${question.id}-option-${index}`}
-                            onChange={() =>
-                              handleAnswerChange(
-                                currentSession.id,
-                                partIndex,
-                                question.id,
-                                option
-                              )
-                            }
-                            
-                            checked={question.selectedAnswer === option}
-                          />
-                        ))}
-                      </Form.Group>
-                    </div>
-                  ))}
+            {currentSession.questions.map((question) => (
+            <div key={question.id} className="mb-4">
+              {/* Audio */}
+              {question.audio && (
+                <>
+                  <Card.Text>Note: This audio just play one time </Card.Text>
+                  <Card.Text>Listen to the audio and answer the question: () </Card.Text>
+                  <audio controls className="mb-3">
+                    <source src={question.audio} type="audio/mpeg" />
+                    <track
+                      kind="captions"
+                      srcLang="en"
+                      label="English captions"
+                    />
+                    Your browser does not support the audio element.
+                  </audio>
+                </>
+              )}
+
+              {/* Gambar */}
+              {question.image && (
+                <div className="mb-3">
+                  <img
+                    src={question.image}
+                    alt="Question related"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
                 </div>
-              ))}
+              )}
+
+              {/* Tampilkan nomor soal berdasarkan questionNumber */}
+              <Card.Text>
+                <b>
+                <strong>{`${question.questionNumber}. `}</strong> {question.text}
+
+                </b>
+              </Card.Text>
+
+              {/* Pilihan jawaban */}
+              <fieldset>
+                <Form.Group>
+                  {question.options.map((option, optionIndex) => (
+                    <Form.Check
+                      key={optionIndex}
+                      type="radio"
+                      label={option}
+                      name={`session-${currentSession.id}-question-${question.id}`}
+                      id={`session-${currentSession.id}-question-${question.id}-option-${optionIndex}`}
+                      onChange={() =>
+                        handleAnswerChange(currentSession.id, question.id, option)
+                      }
+                      checked={question.selectedAnswer === option}
+                    />
+                  ))}
+                </Form.Group>
+              </fieldset>
+            </div>
+          ))}
+
             </Card.Body>
             <Card.Footer className="text-end">
               <Button
                 variant="secondary"
                 onClick={handlePreviousSession}
-                disabled={currentSessionIndex === 0}
+                disabled={currentSessionIndex === 0} // Disable jika sesi pertama
+                className="me-2"
               >
-                Back
-              </Button>{" "}
+                Previous Session
+              </Button>
               <Button
                 variant="primary"
                 onClick={handleNextSession}
-                disabled={currentSession.parts.some((part) =>
-                  part.questions.some((q) => q.selectedAnswer === null)
-                )}
+                disabled={
+                  currentSession.questions.some(
+                    (q) => q.selectedAnswer === null
+                  ) // Tombol disable jika jawaban belum dipilih
+                }
               >
                 {currentSessionIndex < sessions.length - 1
                   ? "Next Session"
@@ -196,21 +216,21 @@ const Soal = () => {
 
       {/* Modal Popup */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
-            <Modal.Header closeButton>
-              <Modal.Title>Berhasil Submit</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              Selamat, Anda telah menyelesaikan semua sesi soal! Nilai anda lebih dari 500, detail nilainya saat klaim Sertifikat
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="success" onClick={() => setShowModal(false)}>
-                Klaim Sertifikat
-              </Button>
-              <Button variant="secondary" onClick={() => setShowModal(false)}>
-                Tidak
-              </Button>
-            </Modal.Footer>
-          </Modal>
+        <Modal.Header closeButton>
+          <Modal.Title>Berhasil Submit</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Selamat, Anda telah menyelesaikan semua sesi soal! nilai anda lebih dari 500, detail nilainya saat klaim Sertifikat
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="success" onClick={() => setShowModal(false)}>
+            Klaim Sertifikat
+          </Button>
+          <Button variant="success" onClick={() => setShowModal(false)}>
+            Tidak
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </React.Fragment>
   );
 };
