@@ -7,7 +7,7 @@ const BuatSoal = () => {
     options: ['', '', '', ''],
     correctOption: null, // Menyimpan indeks jawaban yang benar
     audio: null,
-    type: 'Pilihan Ganda', // Default tipe soal
+    type: 'Listening', // Default tipe soal
   });
   const [soals, setSoals] = useState([]); // Daftar soal
   const [isEdit, setIsEdit] = useState(false); // Menandakan jika sedang mengedit
@@ -56,7 +56,7 @@ const BuatSoal = () => {
       } else {
         setSoals([...soals, soal]); // Menambah soal baru
       }
-      setSoal({ text: '', options: ['', '', '', ''], correctOption: null, audio: null, type: 'Pilihan Ganda' }); // Reset form
+      setSoal({ text: '', options: ['', '', '', ''], correctOption: null, audio: null, type: 'Listening' }); // Reset form
       setIsEdit(false); // Reset mode edit
       setEditIndex(null); // Reset index edit
     } else {
@@ -164,10 +164,19 @@ const BuatSoal = () => {
                     value={soal.type}
                     onChange={handleTypeChange}
                   >
-                    <option value="Pilihan Ganda">Pilihan Ganda</option>
-                    <option value="Essay">Essay</option>
-                    <option value="True/False">True/False</option>
+                    <option value="Listening">Listening</option>
+                    <option value="Structure">Structure</option>
+                    <option value="Reading">Reading</option>
                   </Form.Control>
+                </Form.Group>
+                <Form.Group controlId="formBasicText" className='mb-3'>
+                  <Form.Label>Part</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={soal.text}
+                    onChange={handleTextChange}
+                    placeholder="Masukkan Part Berapa"
+                  />
                 </Form.Group>
 
                 <div className="d-flex justify-content-between mt-4">
@@ -188,9 +197,9 @@ const BuatSoal = () => {
             </Card.Header>
             <Card.Body>
               <ul>
-                <li>Pilihan Ganda: {countSoalByType('Pilihan Ganda')}</li>
-                <li>Essay: {countSoalByType('Essay')}</li>
-                <li>True/False: {countSoalByType('True/False')}</li>
+                <li>Listening: {countSoalByType('Listening')}</li>
+                <li>Structure: {countSoalByType('Structure')}</li>
+                <li>Reading: {countSoalByType('Reading')}</li>
               </ul>
             </Card.Body>
           </Card>

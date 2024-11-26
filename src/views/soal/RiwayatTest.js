@@ -5,7 +5,7 @@ const TestHistory = () => {
   const [testHistory] = useState([
     {
       id: 1,
-      title: "TOEFL Listening Test",
+      title: "TOEFL Gapai try out",
       date: "2024-11-20",
       score: 85,
       details: "Listening comprehension with audio.",
@@ -14,7 +14,7 @@ const TestHistory = () => {
     },
     {
       id: 2,
-      title: "TOEFL Reading Test",
+      title: "TOEFL Gapai Skor prediction",
       date: "2024-11-21",
       score: 90,
       details: "Reading comprehension with passage analysis.",
@@ -23,7 +23,7 @@ const TestHistory = () => {
     },
     {
       id: 3,
-      title: "TOEFL Structure Test",
+      title: "TOEFL Gapai Skor Certificate",
       date: "2024-11-22",
       score: 88,
       details: "Grammar and sentence structure evaluation.",
@@ -70,7 +70,7 @@ const TestHistory = () => {
                   <strong>Date:</strong> {test.date}
                 </Card.Text>
                 <Card.Text>
-                  <strong>Score:</strong> {test.score}
+                  <strong>Score: Diatas</strong> {test.score}
                 </Card.Text>
               </Card.Body>
             </Card>
@@ -83,16 +83,16 @@ const TestHistory = () => {
         <Modal.Header closeButton>
           <Modal.Title>Detail Tes</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="">
           {selectedTest && (
             <>
-              <h5>{selectedTest.title}</h5>
-              <p>
+              <h4>{selectedTest.title}</h4>
+              <h5>
                 <strong>Date:</strong> {selectedTest.date}
-              </p>
-              <p>
-                <strong>Score:</strong> {selectedTest.score}
-              </p>
+              </h5>
+              <h5>
+                <strong>Score: Diatas</strong> {selectedTest.score}
+              </h5>
               <p>{selectedTest.details}</p>
             </>
           )}
@@ -107,7 +107,7 @@ const TestHistory = () => {
             </Button>
           ) : (
             <Button variant="secondary" disabled>
-              Sertifikat Tidak Tersedia
+              Tidak Tersedia / Sudah di Klaim
             </Button>
           )}
           <Button variant="secondary" onClick={handleCloseModal}>
