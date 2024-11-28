@@ -1,68 +1,131 @@
 import React, { useState } from 'react';
 import { Row, Col, Card, Form, Button, InputGroup, Modal } from 'react-bootstrap';
+import apiClient from '../../utils/apiclient';
+
 
 const BuatSoal = () => {
+
+
+  
   const [soal, setSoal] = useState({
-    text: '',
-    options: ['', '', '', ''],
+    // test_code: 'nanti dari state yang halaman test akan mengisi ini',
+    test_id: '4da3c396-abc3-11ef-b1f6-e8b1fc35d733',
+    content_question: '', // Ganti 'text' menjadi 'content_question'
+    option_text: ['', '', '', ''],
+    answer_options : [],
     correctOption: null, // Menyimpan indeks jawaban yang benar
-    audio: null,
-    type: 'Listening', // Default tipe soal
+    // audio_url: null, // Ganti 'audio' menjadi 'audio_url'
+    audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Ganti 'audio' menjadi 'audio_url'
+    image_url: null, // Menambahkan image_url
+    part: "",
+    type_question: 'Listening', // Ganti 'type' menjadi 'type_question'
   });
   const [soals, setSoals] = useState([]); // Daftar soal
   const [isEdit, setIsEdit] = useState(false); // Menandakan jika sedang mengedit
-  const [editIndex, setEditIndex] = useState(null); // Index soal yang sedang diedit
+  // const [editIndex, setEditIndex] = useState(null); // Index soal yang sedang diedit
   const [showModal, setShowModal] = useState(false); // Menampilkan modal konfirmasi hapus
   const [deleteIndex, setDeleteIndex] = useState(null); // Menyimpan index soal yang akan dihapus
 
-  const handleTextChange = (e) => {
-    setSoal({ ...soal, text: e.target.value });
+  const handlePartChange = (e) => {
+    setSoal({ ...soal, part: e.target.value });
+  };
+
+  const handleContentQuestionChange = (e) => {
+    setSoal({ ...soal, content_question: e.target.value }); // Update 'text' menjadi 'content_question'
   };
 
   const handleOptionChange = (index, e) => {
-    const newOptions = [...soal.options];
+    const newOptions = [...soal.option_text];
     newOptions[index] = e.target.value;
-    setSoal({ ...soal, options: newOptions });
+    setSoal({ ...soal, option_text: newOptions });
   };
 
   const handleAddOption = () => {
-    setSoal({ ...soal, options: [...soal.options, ''] });
+    setSoal({ ...soal, option_text: [...soal.option_text, ''] });
   };
 
   const handleRemoveOption = (index) => {
-    const newOptions = soal.options.filter((_, i) => i !== index);
-    setSoal({ ...soal, options: newOptions });
+    const newOptions = soal.option_text.filter((_, i) => i !== index);
+    setSoal({ ...soal, option_text: newOptions });
   };
 
   const handleAddAudio = (e) => {
-    setSoal({ ...soal, audio: e.target.files[0] });
+    setSoal({ ...soal, audio_url: e.target.files[0] }); // Update 'audio' menjadi 'audio_url'
+  };
+
+  const handleAddImage = (e) => {
+    setSoal({ ...soal, image_url: e.target.files[0] }); // Menambahkan image_url
   };
 
   const handleTypeChange = (e) => {
-    setSoal({ ...soal, type: e.target.value });
+    setSoal({ ...soal, type_question: e.target.value }); // Update 'type' menjadi 'type_question'
   };
 
   const handleCorrectOptionChange = (index) => {
     setSoal({ ...soal, correctOption: index }); // Menyimpan indeks soal yang benar
   };
 
-  const handleAddSoal = () => {
-    if (soal.text.trim() && soal.options.every(option => option.trim()) && soal.correctOption !== null) {
-      if (isEdit) {
-        // Jika sedang dalam mode edit, update soal yang ada
-        const updatedSoals = [...soals];
-        updatedSoals[editIndex] = soal;
-        setSoals(updatedSoals);
-      } else {
-        setSoals([...soals, soal]); // Menambah soal baru
+  // const handleAddSoal = (e) => {
+  //   e.preventDefault()
+  //   if (soal.content_question.trim() && soal.option_text.every(option => option.trim()) && soal.correctOption !== null) {
+  //     if (isEdit) {
+  //       // Jika sedang dalam mode edit, update soal yang ada
+  //       const updatedSoals = [...soals];
+  //       updatedSoals[editIndex] = soal;
+  //       setSoals(updatedSoals);
+  //     } else {
+  //       setSoals([...soals, soal]); // Menambah soal baru
+  //     }
+  //     // setSoal({ content_question: '', option_text: ['', '', '', ''], correctOption: null, audio_url: null, image_url: null, type_question: 'Listening' }); // Reset form
+  //     setIsEdit(false); // Reset mode edit
+  //     setEditIndex(null); // Reset index edit
+  //   } else {
+  //     alert("Pastikan semua kolom terisi dengan benar dan jawaban yang benar dipilih!");
+  //   }
+  // };
+
+  const handleAddData = async (e) => {
+
+    console.log('sfsf')
+    e.preventDefault();
+    if (soal.content_question) {
+      try {
+        console.log(soal)
+        for (let i in soal.option_text) {
+          console.log("soal")
+
+          let optionFormat = {
+            is_correct : i == soal.correctOption ? 1 : 0,
+            content_answer : soal.option_text[i]
+          }
+          soal.answer_options.push(optionFormat)
+          console.log("tyyadf")
+        }
+        console.log(soal)
+
+        const response = await apiClient.post('/question_options', soal)
+        // const response = await apiClient.post('/test', {test_code: "manai", test_title: 'Larry', duration: 0, created_by: '' })
+        console.log(response.data)
+        // Redirect or do something after successful login
+          // setTableData([...tableData, newEntry]);
+          setSoal({ 
+            test_code: 'nanti dari state yang halaman test akan mengisi ini',
+            content_question: '', // Ganti 'text' menjadi 'content_question'
+            option_text: ['', '', '', ''],
+            correctOption: null, // Menyimpan indeks jawaban yang benar
+            // audio_url: null, // Ganti 'audio' menjadi 'audio_url'
+            audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Ganti 'audio' menjadi 'audio_url'
+            image_url: null, // Menambahkan image_url
+            part: "",
+            type_question: 'Listening', // Ganti 'type' menjadi 'type_question'
+          });
+          // fetchData()
+      } catch (error) {
+        console.log('Add data failed and try again.');
+        console.error('Error failed:', error);
       }
-      setSoal({ text: '', options: ['', '', '', ''], correctOption: null, audio: null, type: 'Listening' }); // Reset form
-      setIsEdit(false); // Reset mode edit
-      setEditIndex(null); // Reset index edit
-    } else {
-      alert("Pastikan semua kolom terisi dengan benar dan jawaban yang benar dipilih!");
     }
-  };
+  }
 
   const handleEditSoal = (index) => {
     setSoal(soals[index]);
@@ -89,37 +152,37 @@ const BuatSoal = () => {
   };
 
   // Menyortir soal berdasarkan tipe soal
-  const sortedSoals = [...soals].sort((a, b) => a.type.localeCompare(b.type));
+  const sortedSoals = [...soals].sort((a, b) => a.type_question.localeCompare(b.type_question));
 
   // Menghitung jumlah soal berdasarkan tipe
   const countSoalByType = (type) => {
-    return soals.filter(soal => soal.type === type).length;
+    return soals.filter(soal => soal.type_question === type).length;
   };
 
   return (
     <React.Fragment>
       <Row>
         <Col sm={12}>
-          <Card>
+          <Card className='text-unmuted'>
             <Card.Header>
               <Card.Title as="h5">Buat Soal</Card.Title>
             </Card.Header>
             <Card.Body>
               <Form>
-                <Form.Group controlId="formBasicText" className='mb-3'>
+                <Form.Group controlId="formBasicContentQuestion" className='mb-3'>
                   <Form.Label>Soal</Form.Label>
                   <Form.Control
                     as="textarea"
                     rows={3}
-                    value={soal.text}
-                    onChange={handleTextChange}
+                    value={soal.content_question}
+                    onChange={handleContentQuestionChange} // Update 'text' menjadi 'content_question'
                     placeholder="Masukkan soal"
                   />
                 </Form.Group>
 
                 <Form.Group controlId="formBasicOptions" className='mb-3'>
                   <Form.Label>Opsi Jawaban</Form.Label>
-                  {soal.options.map((option, index) => (
+                  {soal.option_text.map((option, index) => (
                     <InputGroup className="mb-3" key={index}>
                       <Form.Control
                         type="text"
@@ -130,16 +193,16 @@ const BuatSoal = () => {
                       <Button
                         variant="outline-danger"
                         onClick={() => handleRemoveOption(index)}
-                        disabled={soal.options.length <= 2}
+                        disabled={soal.option_text.length <= 2}
                       >
                         Hapus
                       </Button>
                       <InputGroup.Text>
-                      Benar <input
+                        Benar <input
                           type="radio"
                           checked={soal.correctOption === index}
                           onChange={() => handleCorrectOptionChange(index)}
-                        /> 
+                        />
                       </InputGroup.Text>
                     </InputGroup>
                   ))}
@@ -153,7 +216,16 @@ const BuatSoal = () => {
                   <Form.Control
                     type="file"
                     accept="audio/*"
-                    onChange={handleAddAudio}
+                    onChange={handleAddAudio} // Update 'audio' menjadi 'audio_url'
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formBasicImage">
+                  <Form.Label>Gambar Soal</Form.Label>
+                  <Form.Control
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAddImage} // Menambahkan gambar
                   />
                 </Form.Group>
 
@@ -161,28 +233,31 @@ const BuatSoal = () => {
                   <Form.Label>Tipe Soal</Form.Label>
                   <Form.Control
                     as="select"
-                    value={soal.type}
-                    onChange={handleTypeChange}
+                    value={soal.type_question}
+                    onChange={handleTypeChange} // Update 'type' menjadi 'type_question'
                   >
                     <option value="Listening">Listening</option>
                     <option value="Structure">Structure</option>
                     <option value="Reading">Reading</option>
                   </Form.Control>
                 </Form.Group>
-                <Form.Group controlId="formBasicText" className='mb-3'>
+
+                <Form.Group controlId="formBasicPart" className='mb-3'>
                   <Form.Label>Part</Form.Label>
                   <Form.Control
                     type="text"
-                    value={soal.text}
-                    onChange={handleTextChange}
+                    value={soal.part}
+                    onChange={handlePartChange}
                     placeholder="Masukkan Part Berapa"
                   />
                 </Form.Group>
 
                 <div className="d-flex justify-content-between mt-4">
-                  <Button variant="primary" onClick={handleAddSoal}>
+                  <form onSubmit={handleAddData}>
+                  <Button variant="primary" type='submit' onClick={handleAddData}>
                     {isEdit ? 'Update Soal' : 'Tambah Soal'}
                   </Button>
+                  </form>
                 </div>
               </Form>
             </Card.Body>
@@ -215,20 +290,35 @@ const BuatSoal = () => {
               <ul>
                 {sortedSoals.map((item, index) => (
                   <li key={index}>
-                    <strong>Soal:</strong> {item.text} <br />
-                    <strong>Opsi:</strong> {item.options.join(', ')} <br />
-                    <strong>Tipe Soal:</strong> {item.type} <br />
-                    <strong>Jawaban Benar:</strong> {item.options[item.correctOption]} <br />
-                    {item.audio && 
-                    // <audio controls><source src={URL.createObjectURL(item.audio)} type="audio/mp3" /></audio>
-                    <audio controls className="mb-3">
-                    <source src={question.audio} type="audio/mpeg" />
-                    <track kind="captions" srcLang="en" label="English captions" />
-                    Your browser does not support the audio element.
-                    </audio>
-                    }
-                    <Button variant="outline-info" onClick={() => handleEditSoal(index)} className="ml-2">Edit</Button>
-                    <Button variant="outline-danger" onClick={() => handleDeleteSoal(index)} className="ml-2">Hapus</Button>
+                    <div>
+                      <strong>{item.content_question}</strong>
+                      <br />
+                      Tipe: {item.type_question}, Part: {item.part}
+                      <br />
+                      Opsi Jawaban: {item.option_text.join(', ')}
+                      <br />
+                      {item.audio_url && (
+                        <audio controls className="mb-3">
+                          {/* <source src={URL.createObjectURL(item.audio_url)} type="audio/mpeg" /> */}
+                          <source src={item.audio_url} type="audio/mpeg" />
+                          <track
+                          kind="captions"
+                          srcLang="en"
+                          label="English captions"
+                          />
+                          Your browser does not support the audio element.
+                        </audio>
+                      )}
+                      {item.image_url && <img src={item.image_url} alt="Gambar soal" className="mb-3" />}
+                    </div>
+                    <div>
+                      <Button variant="outline-warning" onClick={() => handleEditSoal(index)}>
+                        Edit
+                      </Button>
+                      <Button variant="outline-danger" onClick={() => handleDeleteSoal(index)}>
+                        Hapus
+                      </Button>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -237,7 +327,7 @@ const BuatSoal = () => {
         </Col>
       </Row>
 
-      {/* Modal Konfirmasi Hapus */}
+      {/* Modal konfirmasi hapus soal */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Konfirmasi Hapus</Modal.Title>

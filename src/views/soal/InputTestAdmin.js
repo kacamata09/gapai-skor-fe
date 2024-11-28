@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Form, Button, Table, Modal } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import apiClient from '../../utils/apiclient';
 
 const InputTestAdmin = () => {
+  const navigate = useNavigate(); // Hook untuk navigasi
   const fetchData = async () => {
 
     const data = await apiClient.get('/test')
@@ -11,7 +13,6 @@ const InputTestAdmin = () => {
     console.log(data)
     
   }
-  
   
   useEffect(()=> {
     fetchData()
@@ -55,18 +56,6 @@ const InputTestAdmin = () => {
     }
   }
 
-  // const handleAddData = async(e) => {
-  //   e.preventDefault()
-  //   await apiClient.post('/test', newData)
-  //   const newEntry = {
-  //     id: tableData.length + 1,
-  //     ...newData,
-  //   };
-  //   setTableData([...tableData, newEntry]);
-  //   setNewData({ test_code: "", test_title: '', duration: '', created_by: '' });
-  //   setModalShow(false);
-  // };
-
   const handleDelete = (id) => {
     setTableData(tableData.filter((row) => row.id !== id));
   };
@@ -90,6 +79,12 @@ const InputTestAdmin = () => {
     setModalShow(true);
   };
 
+  // Fungsi untuk membuka halaman BuatSoal dengan mengirimkan test_code
+  const handleDetailNavigation = () => {
+    // Arahkan ke halaman BuatSoal dan kirimkan test_code melalui query params atau state
+    navigate('/admin/soal', { state: { setSoal: selectedRow.id } });
+  };
+
   return (
     <React.Fragment>
       <Row>
@@ -111,7 +106,6 @@ const InputTestAdmin = () => {
                 <thead>
                   <tr>
                     <th>Kode Test</th>
-                    <th>Kode Test</th>
                     <th>Nama Test</th>
                     <th>Durasi</th>
                     <th>Pembuat</th>
@@ -121,7 +115,6 @@ const InputTestAdmin = () => {
                 <tbody>
                   {tableData.map((row) => (
                     <tr key={row.id}>
-                      <th scope="row">{row.id}</th>
                       <td>{row.test_code}</td>
                       <td>{row.test_title}</td>
                       <td>{row.duration}</td>
@@ -176,14 +169,18 @@ const InputTestAdmin = () => {
                 <strong>Kode Test:</strong> {selectedRow?.test_code}
               </p>
               <p>
-                <strong>First Name:</strong> {selectedRow?.test_title}
+                <strong>Nama Test:</strong> {selectedRow?.test_title}
               </p>
               <p>
-                <strong>Last Name:</strong> {selectedRow?.duration}
+                <strong>Durasi:</strong> {selectedRow?.duration}
               </p>
               <p>
-                <strong>Username:</strong> {selectedRow?.created_by}
+                <strong>Pembuat:</strong> {selectedRow?.created_by}
               </p>
+              {/* Tombol untuk navigasi ke halaman BuatSoal */}
+              <Button variant="primary" onClick={handleDetailNavigation}>
+                Buat Soal
+              </Button>
             </div>
           ) : (
             <Form>
