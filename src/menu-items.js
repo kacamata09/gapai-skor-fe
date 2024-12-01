@@ -1,3 +1,7 @@
+
+import { getLocalStorageItem } from "./utils/localStorage";
+
+
 const menuItems = {
   items: [
     {
@@ -241,5 +245,39 @@ const menuItems = {
     // }
   ]
 };
+
+const data_user = getLocalStorageItem('dataUser')
+// const data_user = localStorage.getItem('dataUser')
+console.log(data_user, "nilaii")
+
+if (data_user && data_user.role == 'Admin') {
+  console.log(data_user)
+
+  menuItems.items = [
+    {
+      id: 'ui-forms',
+      title: 'Admin',
+      type: 'group',
+      icon: 'icon-group',
+      children: [
+        {
+          id: 'tests',
+          title: ' Test',
+          type: 'item',
+          icon: 'feather icon-file-text',
+          url: '/admin/test'
+        },
+        // {
+        //   id: 'table',
+        //   title: 'User Management',
+        //   type: 'item',
+        //   icon: 'feather icon-server',
+        //   url: '/users'
+        // },
+      ]
+    } 
+  ]
+}
+
 
 export default menuItems;

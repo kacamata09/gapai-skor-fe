@@ -1,48 +1,57 @@
 import React, { useState } from 'react';
-import { Card, Row, Col } from 'react-bootstrap';
+import { Card, Row, Col, Spinner, Alert } from 'react-bootstrap';
 import { NavLink, useNavigate } from 'react-router-dom';
-
 import Breadcrumb from '../../../layouts/AdminLayout/Breadcrumb';
 import apiClient from '../../../utils/apiclient';
 
 const SignUp1 = () => {
-  const navigate = useNavigate()
-  
+  const navigate = useNavigate();
   const [dataUser, setDataUser] = useState({
-    fullname : "",
-    username : "",
+    fullname: "",
+    username: "",
     phone: "",
-    email : "",
-    password : "",
-  })
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-   const handleLogin = async (e) => {
-
+  const handleRegister = async (e) => {
     e.preventDefault();
-    if (dataUser.email) {
-      try {
-        console.log(dataUser)
-        const response = await apiClient.post('/user', dataUser)
-        console.log(response.data.data)
-        localStorage.setItem('accessToken', response.data.data);
-        // Redirect or do something after successful login
-        navigate('/')
-      } catch (error) {
-        console.log('Login failed. Please check your credentials and try again.');
-        console.error('Error during login:', error);
-      }
-    }
-    
-  }
-  
+    setError(""); // Reset error state
 
-  const changeInput = (e) => {const { value, name } = e.target;
-  console.log(value, name)
-  setDataUser({
-    ...dataUser, [name] : value
-  })
-  console.log(dataUser)
-}
+    const { fullname, username, phone, email, password, confirmPassword } = dataUser;
+
+    // Validasi input wajib dan kesesuaian password
+    if (!fullname || !username || !phone || !email || !password || !confirmPassword) {
+      setError("All fields are required!");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Password and Confirm Password do not match!");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await apiClient.post('/user', { fullname, username, phone, email, password });
+      console.log(response.data.data);
+      navigate('/login');
+    } catch (error) {
+      console.error('Error during register:', error);
+      setError('Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const changeInput = (e) => {
+    const { value, name } = e.target;
+    setDataUser((prevState) => ({ ...prevState, [name]: value }));
+  };
+
   return (
     <React.Fragment>
       <Breadcrumb />
@@ -62,53 +71,65 @@ const SignUp1 = () => {
                     <i className="feather icon-user-plus auth-icon" />
                   </div>
                   <h3 className="mb-4">REGISTER</h3>
-                  <div className="input-group mb-3">
-                    <input
-                    name='fullname'
-                    onChange={changeInput} 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="Nama Lengkap" 
-                  />
-                  </div>
-                  <div className="input-group mb-3">
-                    <input
-                    name='username'
-                    onChange={changeInput} 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="Username" 
-                  />
-                  </div>
-                  <div className="input-group mb-3">
-                    <input 
-                    onChange={changeInput} 
-                    type="email" 
-                    name='email'
-                    className="form-control" 
-                    placeholder="Email address" />
-                    
-                  </div>
-                  <div className="input-group mb-3">
-                    <input
-                    name='phone'
-                    onChange={changeInput} 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="No. Telepon (Whatsapp)" 
-                  />
-                  </div>
-                  <div className="input-group mb-4">
-                    <input 
-                    onChange={changeInput} 
-                    type="password" 
-                    name='password'
-                    className="form-control" 
-                    placeholder="Password" />
-                  </div>
-              <form noValidate onSubmit={handleLogin}>
-
-                  <button onSubmit={handleLogin} type='submit' className="btn btn-primary mb-4">REGISTER</button>
+                  {error && <Alert variant="danger">{error}</Alert>}
+                  <form noValidate onSubmit={handleRegister}>
+                    <div className="input-group mb-3">
+                      <input
+                        name="fullname"
+                        onChange={changeInput}
+                        type="text"
+                        className="form-control"
+                        placeholder="Nama Lengkap"
+                      />
+                    </div>
+                    <div className="input-group mb-3">
+                      <input
+                        name="username"
+                        onChange={changeInput}
+                        type="text"
+                        className="form-control"
+                        placeholder="Username"
+                      />
+                    </div>
+                    <div className="input-group mb-3">
+                      <input
+                        name="email"
+                        onChange={changeInput}
+                        type="email"
+                        className="form-control"
+                        placeholder="Email address"
+                      />
+                    </div>
+                    <div className="input-group mb-3">
+                      <input
+                        name="phone"
+                        onChange={changeInput}
+                        type="text"
+                        className="form-control"
+                        placeholder="No. Telepon (Whatsapp)"
+                      />
+                    </div>
+                    <div className="input-group mb-3">
+                      <input
+                        name="password"
+                        onChange={changeInput}
+                        type="password"
+                        className="form-control"
+                        placeholder="Password"
+                      />
+                    </div>
+                    <div className="input-group mb-4">
+                      <input
+                        name="confirmPassword"
+                        onChange={changeInput}
+                        type="password"
+                        className="form-control"
+                        placeholder="Confirm Password"
+                      />
+                    </div>
+                    <button type="submit" className="btn btn-primary mb-4" disabled={loading}>
+                      {loading ? <Spinner as="span" animation="border" size="sm" /> : 'REGISTER'}
+                    </button>
                   </form>
                   <p className="mb-2">
                     Sudah punya akun?{' '}

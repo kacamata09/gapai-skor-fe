@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import apiClient from '../../../utils/apiclient';
 import { useNavigate } from 'react-router-dom';
+import { setLocalStorageItem } from '../../../utils/localStorage';
 
 const FirebaseLogin = ({ className, ...rest }) => {
   const navigate = useNavigate();
@@ -20,8 +21,11 @@ const FirebaseLogin = ({ className, ...rest }) => {
       });
 
       const token = response.data?.data?.data_user;
+      console.log(token)
       if (token) {
-        localStorage.setItem('dataUser', JSON.stringify(token));
+        // localStorage.setItem('dataUser', JSON.stringify(token));
+        setLocalStorageItem('dataUser', token)
+
         navigate('/');
       } else {
         setErrorMessage('Login failed: Invalid credentials');

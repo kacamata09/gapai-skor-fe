@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 import Loader from './components/Loader/Loader';
 import AdminLayout from './layouts/AdminLayout';
-
+import { AuthGuard, PublicGuard } from './guards'; // Import guards
 import { BASE_URL } from './config/constant';
 
 export const renderRoutes = (routes = []) => (
@@ -34,27 +34,36 @@ const routes = [
   {
     exact: 'true',
     path: '/login',
-    element: lazy(() => import('./views/auth/signin/SignIn1'))
-  },
-  {
-    exact: 'true',
-    path: '/auth/signin-1',
-    element: lazy(() => import('./views/auth/signin/SignIn1'))
+    element: lazy(() => import('./views/auth/signin/SignIn1')),
+    guard: PublicGuard, // Hanya bisa diakses jika belum login
   },
   {
     exact: 'true',
     path: '/auth/signup-1',
-    element: lazy(() => import('./views/auth/signup/SignUp1'))
-  },
-  {
-    exact: 'true',
-    path: '/auth/reset-password-1',
-    element: lazy(() => import('./views/auth/reset-password/ResetPassword1'))
+    element: lazy(() => import('./views/auth/signup/SignUp1')),
+    guard: PublicGuard, // Hanya bisa diakses jika belum login
   },
   {
     path: '*',
     layout: AdminLayout,
+    guard: AuthGuard, // Hanya bisa diakses jika sudah login
     routes: [
+      {
+        exact: 'true',
+        path: '/admin/soal',
+        element: lazy(() => import('./views/soal/BuatSoal'))
+      },
+      {
+        exact: 'true',
+        path: '/admin/test',
+        element: lazy(() => import('./views/soal/InputTestAdmin'))
+      },
+      {
+        exact: 'true',
+        path: '/',
+        element: lazy(() => import('./views/dashboard'))
+      },
+      
       {
         exact: 'true',
         path: '/admin/soal',
@@ -82,7 +91,7 @@ const routes = [
       },
       {
         exact: 'true',
-        path: '/app/dashboard/default',
+        path: '/',
         element: lazy(() => import('./views/dashboard'))
       },
       {
@@ -149,9 +158,16 @@ const routes = [
         path: '*',
         exact: 'true',
         element: () => <Navigate to={BASE_URL} />
+      },
+
+      {
+        path: '*',
+        exact: 'true',
+        element: () => <Navigate to={BASE_URL} />
       }
     ]
   }
 ];
 
 export default routes;
+
