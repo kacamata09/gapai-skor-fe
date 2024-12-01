@@ -38,11 +38,14 @@ const Signin1 = () => {
                   Signup
                 </NavLink>
               </p>
+
               <Alert variant="primary" className="text-start mt-3">
+                <h5>Example / Contoh :</h5>
+                <br/>
                 User:
-                <CopyToClipboard text="info@codedthemes.com">
+                <CopyToClipboard text="anleonjenius">
                   <Button variant="outline-primary" as={Link} to="#" className="badge mx-2 mb-2" size="sm">
-                    <i className="fa fa-user" /> info@codedthemes.com
+                    <i className="fa fa-user" /> anleonjenius
                   </Button>
                 </CopyToClipboard>
                 <br />

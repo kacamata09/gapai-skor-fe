@@ -1,15 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Form, Button, InputGroup, Modal } from 'react-bootstrap';
 import apiClient from '../../utils/apiclient';
+import { useLocation } from 'react-router-dom';
 
 
 const BuatSoal = () => {
 
+  const location = useLocation();
+  const testState = location.state;
+
+  console.log('State from navigate:', testState)
+
+
+  const fetchData = async () => {
+
+    const data = await apiClient.get('/question/test_id/' + testState.test_id)
+    setSoals(data.data.data)
+      
+    console.log(data)
+    
+  }
+  
+  useEffect(()=> {
+    fetchData()
+  }, [])
+
+
+
 
   
   const [soal, setSoal] = useState({
-    // test_code: 'nanti dari state yang halaman test akan mengisi ini',
-    test_id: '4da3c396-abc3-11ef-b1f6-e8b1fc35d733',
+    test_id: testState.test_id,
     content_question: '', // Ganti 'text' menjadi 'content_question'
     option_text: ['', '', '', ''],
     answer_options : [],
@@ -18,7 +39,7 @@ const BuatSoal = () => {
     audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Ganti 'audio' menjadi 'audio_url'
     image_url: null, // Menambahkan image_url
     part: "",
-    type_question: 'Listening', // Ganti 'type' menjadi 'type_question'
+    question_type: 'Listening', // Ganti 'type' menjadi 'question_type'
   });
   const [soals, setSoals] = useState([]); // Daftar soal
   const [isEdit, setIsEdit] = useState(false); // Menandakan jika sedang mengedit
@@ -58,7 +79,7 @@ const BuatSoal = () => {
   };
 
   const handleTypeChange = (e) => {
-    setSoal({ ...soal, type_question: e.target.value }); // Update 'type' menjadi 'type_question'
+    setSoal({ ...soal, question_type: e.target.value }); // Update 'type' menjadi 'question_type'
   };
 
   const handleCorrectOptionChange = (index) => {
@@ -76,7 +97,7 @@ const BuatSoal = () => {
   //     } else {
   //       setSoals([...soals, soal]); // Menambah soal baru
   //     }
-  //     // setSoal({ content_question: '', option_text: ['', '', '', ''], correctOption: null, audio_url: null, image_url: null, type_question: 'Listening' }); // Reset form
+  //     // setSoal({ content_question: '', option_text: ['', '', '', ''], correctOption: null, audio_url: null, image_url: null, question_type: 'Listening' }); // Reset form
   //     setIsEdit(false); // Reset mode edit
   //     setEditIndex(null); // Reset index edit
   //   } else {
@@ -110,16 +131,18 @@ const BuatSoal = () => {
           // setTableData([...tableData, newEntry]);
           setSoal({ 
             test_code: 'nanti dari state yang halaman test akan mengisi ini',
+            test_id : testState.test_id,
             content_question: '', // Ganti 'text' menjadi 'content_question'
             option_text: ['', '', '', ''],
             correctOption: null, // Menyimpan indeks jawaban yang benar
+            answer_options: [],
             // audio_url: null, // Ganti 'audio' menjadi 'audio_url'
             audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Ganti 'audio' menjadi 'audio_url'
             image_url: null, // Menambahkan image_url
             part: "",
-            type_question: 'Listening', // Ganti 'type' menjadi 'type_question'
+            question_type: 'Listening', // Ganti 'type' menjadi 'question_type'
           });
-          // fetchData()
+          fetchData()
       } catch (error) {
         console.log('Add data failed and try again.');
         console.error('Error failed:', error);
@@ -152,11 +175,11 @@ const BuatSoal = () => {
   };
 
   // Menyortir soal berdasarkan tipe soal
-  const sortedSoals = [...soals].sort((a, b) => a.type_question.localeCompare(b.type_question));
+  const sortedSoals = [...soals].sort((a, b) => a.question_type.localeCompare(b.question_type));
 
   // Menghitung jumlah soal berdasarkan tipe
   const countSoalByType = (type) => {
-    return soals.filter(soal => soal.type_question === type).length;
+    return soals.filter(soal => soal.question_type === type).length;
   };
 
   return (
@@ -233,8 +256,8 @@ const BuatSoal = () => {
                   <Form.Label>Tipe Soal</Form.Label>
                   <Form.Control
                     as="select"
-                    value={soal.type_question}
-                    onChange={handleTypeChange} // Update 'type' menjadi 'type_question'
+                    value={soal.question_type}
+                    onChange={handleTypeChange} // Update 'type' menjadi 'question_type'
                   >
                     <option value="Listening">Listening</option>
                     <option value="Structure">Structure</option>
@@ -293,9 +316,9 @@ const BuatSoal = () => {
                     <div>
                       <strong>{item.content_question}</strong>
                       <br />
-                      Tipe: {item.type_question}, Part: {item.part}
+                      Tipe: {item.question_type}, Part: {item.part}
                       <br />
-                      Opsi Jawaban: {item.option_text.join(', ')}
+                      {/* Opsi Jawaban: {item.option_text.join(', ')} */}
                       <br />
                       {item.audio_url && (
                         <audio controls className="mb-3">

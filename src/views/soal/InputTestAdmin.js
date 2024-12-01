@@ -82,7 +82,7 @@ const InputTestAdmin = () => {
   // Fungsi untuk membuka halaman BuatSoal dengan mengirimkan test_code
   const handleDetailNavigation = () => {
     // Arahkan ke halaman BuatSoal dan kirimkan test_code melalui query params atau state
-    navigate('/admin/soal', { state: { setSoal: selectedRow.id } });
+    navigate('/admin/soal', { state: { test_id: selectedRow.id } });
   };
 
   return (
