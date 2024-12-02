@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Card, Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,6 +9,12 @@ const InputCodeSoal = () => {
     { variant: 'primary', label: 'Klaim Sertifikat Tes Sebelumnya', icon: 'feather icon-check', link: "https://api.whatsapp.com/send?phone=6285795596736" },
     { variant: 'secondary', label: 'Lihat Riwayat Tes', icon: 'feather icon-eye', link: "/riwayat_test" },
   ];
+
+  const [testCode, setTestCode] = useState("test")
+
+    const handleBuatSoalNavigation = () => {
+      navigate('/soal', { state: { test_code: testCode } });
+    };    
         
   return ( 
     <React.Fragment>
@@ -27,13 +33,19 @@ const InputCodeSoal = () => {
                 <Form.Group className="d-inline-flex align-items-center mx-3">
                   <Form.Label className="mb-0">Kode:</Form.Label>
                   <Form.Control
+                    onChange={(e)=> {
+                      e.preventDefault()
+                      const { name, value } = e.target;
+                      setTestCode(value)
+                      console.log(name)
+                    }}
                     className="mx-2"
                     type="text"
                     placeholder="Masukkan kode ujian"
                   />
                 </Form.Group>
                 <Form.Group className="d-inline-flex mx-3">
-                  <Button variant="primary" className="mb-0">
+                  <Button variant="primary" className="mb-0" onClick={handleBuatSoalNavigation}>
                     Masuk
                   </Button>
                 </Form.Group>

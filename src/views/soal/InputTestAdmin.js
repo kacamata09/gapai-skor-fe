@@ -50,8 +50,7 @@ const InputTestAdmin = () => {
           setModalShow(false);
           fetchData()
       } catch (error) {
-        console.log('Login failed. Please check your credentials and try again.');
-        console.error('Error during login:', error);
+        console.error('Error during input:', error);
       }
     }
   }

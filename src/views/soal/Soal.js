@@ -5,59 +5,59 @@ const Soal = () => {
   const [sessions, setSessions] = useState([
     {
       id: 1,
-      title: "Listening",
+      session_type: "Listening",
       questions: [
         {
-          questionNumber: 1,
+          question_number: 1,
           id: 1,
-          text: "What audio said?",
-          audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Link contoh audio
-          image: 'https://www.researchgate.net/publication/327267367/figure/fig1/AS:664590664880143@1535462170643/Reading-section-directions-for-TOEFL-iBT-on-the-computer-screen-passage-are-also.png',
+          text: "What did the audio say?",
+          audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+          image: "https://via.placeholder.com/150",
           options: ["Option A", "Option B", "Option C"],
-          selectedAnswer: null,
+          selected_answer: null,
+          play_count: 0,
         },
         {
-          questionNumber: 2,
+          question_number: 2,
           id: 2,
           text: "Choose the correct option:",
           options: ["Option 1", "Option 2", "Option 3"],
-          selectedAnswer: null,
+          selected_answer: null,
         },
       ],
     },
     {
       id: 2,
-      title: "Structure",
+      session_type: "Structure",
       questions: [
         {
-          questionNumber: 1,
+          question_number: 1,
           id: 1,
           text: "Identify the synonym of 'happy':",
-          image: "https://via.placeholder.com/150", // Contoh gambar
+          image: "https://via.placeholder.com/150",
           options: ["Sad", "Joyful", "Angry"],
-          selectedAnswer: null,
+          selected_answer: null,
         },
       ],
     },
     {
       id: 3,
-      title: "Reading",
+      session_type: "Reading",
       questions: [
         {
-          questionNumber: 1,
+          question_number: 1,
           id: 1,
           text: "Complete the sentence: 'She is ____ than her brother.'",
           options: ["taller", "shorter", "older"],
-          selectedAnswer: null,
+          selected_answer: null,
         },
       ],
     },
   ]);
-  
 
   const [currentSessionIndex, setCurrentSessionIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(7200); // Durasi 120 menit dalam detik
+  const [timeLeft, setTimeLeft] = useState(7200);
 
   React.useEffect(() => {
     const timer = setInterval(() => {
@@ -86,7 +86,22 @@ const Soal = () => {
       if (session.id === sessionId) {
         const updatedQuestions = session.questions.map((question) =>
           question.id === questionId
-            ? { ...question, selectedAnswer: answer }
+            ? { ...question, selected_answer: answer }
+            : question
+        );
+        return { ...session, questions: updatedQuestions };
+      }
+      return session;
+    });
+    setSessions(updatedSessions);
+  };
+
+  const handleAudioPlay = (sessionId, questionId) => {
+    const updatedSessions = sessions.map((session) => {
+      if (session.id === sessionId) {
+        const updatedQuestions = session.questions.map((question) =>
+          question.id === questionId
+            ? { ...question, play_count: question.play_count + 1 }
             : question
         );
         return { ...session, questions: updatedQuestions };
@@ -100,7 +115,7 @@ const Soal = () => {
     if (currentSessionIndex < sessions.length - 1) {
       setCurrentSessionIndex(currentSessionIndex + 1);
     } else {
-      setShowModal(true); // Menampilkan popup saat sesi terakhir selesai
+      setShowModal(true);
     }
   };
 
@@ -118,80 +133,80 @@ const Soal = () => {
         <Col sm={12}>
           <div style={{ textAlign: "left", marginBottom: "10px" }}>
             <h4>
-
-            <strong className="text-unmuted">Waktu tersisa: {formatTime(timeLeft)}</strong>
+              <strong>Waktu tersisa: {formatTime(timeLeft)}</strong>
             </h4>
           </div>
-          <Card className="text-unmuted">
+          <Card>
             <Card.Header>
-              <Card.Title as="h5">{currentSession.title}</Card.Title>
+              <Card.Title as="h5">{currentSession.session_type}</Card.Title>
             </Card.Header>
             <Card.Body>
-            {currentSession.questions.map((question) => (
-            <div key={question.id} className="mb-4">
-              {/* Audio */}
-              {question.audio && (
-                <>
-                  <Card.Text>Note: This audio just play one time </Card.Text>
-                  <Card.Text>Listen to the audio and answer the question: () </Card.Text>
-                  <audio controls className="mb-3">
-                    <source src={question.audio} type="audio/mpeg" />
-                    <track
-                      kind="captions"
-                      srcLang="en"
-                      label="English captions"
-                    />
-                    Your browser does not support the audio element.
-                  </audio>
-                </>
-              )}
-
-              {/* Gambar */}
-              {question.image && (
-                <div className="mb-3">
-                  <img
-                    src={question.image}
-                    alt="Question related"
-                    style={{ maxWidth: "100%", height: "auto" }}
-                  />
+              {currentSession.questions.map((question) => (
+                <div key={question.id} className="mb-4">
+                  {question.audio && (
+                    <>
+                      <Card.Text>Listen to the audio and answer the question:</Card.Text>
+                      <audio
+                        controls
+                        className="mb-3"
+                        onPlay={() => handleAudioPlay(currentSession.id, question.id)}
+                        onEnded={() => {
+                          if (question.play_count >= 1) {
+                            const audioElement = document.querySelector(
+                              `audio[src="${question.audio}"]`
+                            );
+                            if (audioElement) {
+                              audioElement.controls = false;
+                            }
+                          }
+                        }}
+                      >
+                        <source src={question.audio} type="audio/mpeg" />
+                        <track kind="captions" srcLang="en" label="English captions" />
+                        Your browser does not support the audio element.
+                      </audio>
+                      <p className="text-muted">
+                        Note: Audio can only be played 2 times.
+                      </p>
+                    </>
+                  )}
+                  {question.image && (
+                    <div className="mb-3">
+                      <img
+                        src={question.image}
+                        alt="Question related"
+                        style={{ maxWidth: "100%", height: "auto" }}
+                      />
+                    </div>
+                  )}
+                  <Card.Text>
+                    <strong>{`${question.question_number}. ${question.text}`}</strong>
+                  </Card.Text>
+                  <fieldset>
+                    <Form.Group>
+                      {question.options.map((option, index) => (
+                        <Form.Check
+                          key={index}
+                          type="radio"
+                          label={option}
+                          name={`session-${currentSession.id}-question-${question.id}`}
+                          id={`session-${currentSession.id}-question-${question.id}-option-${index}`}
+                          onChange={() =>
+                            handleAnswerChange(currentSession.id, question.id, option)
+                          }
+                          checked={question.selected_answer === option}
+                        />
+                      ))}
+                    </Form.Group>
+                  </fieldset>
                 </div>
-              )}
-
-              {/* Tampilkan nomor soal berdasarkan questionNumber */}
-              <Card.Text>
-                <b>
-                <strong>{`${question.questionNumber}. `}</strong> {question.text}
-
-                </b>
-              </Card.Text>
-
-              {/* Pilihan jawaban */}
-              <fieldset>
-                <Form.Group>
-                  {question.options.map((option, optionIndex) => (
-                    <Form.Check
-                      key={optionIndex}
-                      type="radio"
-                      label={option}
-                      name={`session-${currentSession.id}-question-${question.id}`}
-                      id={`session-${currentSession.id}-question-${question.id}-option-${optionIndex}`}
-                      onChange={() =>
-                        handleAnswerChange(currentSession.id, question.id, option)
-                      }
-                      checked={question.selectedAnswer === option}
-                    />
-                  ))}
-                </Form.Group>
-              </fieldset>
-            </div>
-          ))}
-
+              ))}
             </Card.Body>
             <Card.Footer className="text-end">
               <Button
                 variant="secondary"
                 onClick={handlePreviousSession}
-                disabled={currentSessionIndex === 0} // Disable jika sesi pertama
+                disabled={currentSessionIndex === 0}
                 className="me-2"
               >
                 Previous Session
@@ -199,35 +214,25 @@ const Soal = () => {
               <Button
                 variant="primary"
                 onClick={handleNextSession}
-                disabled={
-                  currentSession.questions.some(
-                    (q) => q.selectedAnswer === null
-                  ) // Tombol disable jika jawaban belum dipilih
-                }
+                disabled={currentSession.questions.some((q) => !q.selected_answer)}
               >
-                {currentSessionIndex < sessions.length - 1
-                  ? "Next Session"
-                  : "Submit"}
+                {currentSessionIndex < sessions.length - 1 ? "Next Session" : "Submit"}
               </Button>
             </Card.Footer>
           </Card>
         </Col>
       </Row>
 
-      {/* Modal Popup */}
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Berhasil Submit</Modal.Title>
+      <Modal show={showModal} backdrop="static" keyboard={false}>
+        <Modal.Header>
+          <Modal.Title>Submission Complete</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Selamat, Anda telah menyelesaikan semua sesi soal! nilai anda lebih dari 500, detail nilainya saat klaim Sertifikat
+          You have successfully completed all sessions! Your score will be displayed upon certificate claim.
         </Modal.Body>
         <Modal.Footer>
           <Button variant="success" onClick={() => setShowModal(false)}>
-            Klaim Sertifikat
-          </Button>
-          <Button variant="success" onClick={() => setShowModal(false)}>
-            Tidak
+            Claim Certificate
           </Button>
         </Modal.Footer>
       </Modal>
