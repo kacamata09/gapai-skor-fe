@@ -10,7 +10,6 @@ const InputTestAdmin = () => {
     const data = await apiClient.get('/test')
     setTableData(data.data.data)
       
-    console.log(data)
     
   }
   

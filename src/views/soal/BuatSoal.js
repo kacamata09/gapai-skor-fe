@@ -35,10 +35,11 @@ const BuatSoal = () => {
     option_text: ['', '', '', ''],
     answer_options : [],
     correctOption: null, // Menyimpan indeks jawaban yang benar
-    // audio_url: null, // Ganti 'audio' menjadi 'audio_url'
-    audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Ganti 'audio' menjadi 'audio_url'
+    audio_url: null, // Ganti 'audio' menjadi 'audio_url'
+    // audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Ganti 'audio' menjadi 'audio_url'
+    
     image_url: null, // Menambahkan image_url
-    part: "",
+    question_number: 0,
     question_type: 'Listening', // Ganti 'type' menjadi 'question_type'
   });
   const [soals, setSoals] = useState([]); // Daftar soal
@@ -48,7 +49,7 @@ const BuatSoal = () => {
   const [deleteIndex, setDeleteIndex] = useState(null); // Menyimpan index soal yang akan dihapus
 
   const handlePartChange = (e) => {
-    setSoal({ ...soal, part: e.target.value });
+    setSoal({ ...soal, question_number: Number(e.target.value) });
   };
 
   const handleContentQuestionChange = (e) => {
@@ -139,7 +140,7 @@ const BuatSoal = () => {
             // audio_url: null, // Ganti 'audio' menjadi 'audio_url'
             audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Ganti 'audio' menjadi 'audio_url'
             image_url: null, // Menambahkan image_url
-            part: "",
+            question_number: 0,
             question_type: 'Listening', // Ganti 'type' menjadi 'question_type'
           });
           fetchData()
@@ -266,12 +267,12 @@ const BuatSoal = () => {
                 </Form.Group>
 
                 <Form.Group controlId="formBasicPart" className='mb-3'>
-                  <Form.Label>Part</Form.Label>
+                  <Form.Label>Nomor</Form.Label>
                   <Form.Control
-                    type="text"
-                    value={soal.part}
+                    type="number"
+                    value={soal.question_number}
                     onChange={handlePartChange}
-                    placeholder="Masukkan Part Berapa"
+                    placeholder="Masukkan Nomor Berapa"
                   />
                 </Form.Group>
 
@@ -316,7 +317,7 @@ const BuatSoal = () => {
                     <div>
                       <strong>{item.content_question}</strong>
                       <br />
-                      Tipe: {item.question_type}, Part: {item.part}
+                      Tipe: {item.question_type}, Nomor: {item.question_number}
                       <br />
                       {/* Opsi Jawaban: {item.option_text.join(', ')} */}
                       <br />

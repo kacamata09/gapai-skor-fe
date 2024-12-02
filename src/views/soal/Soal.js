@@ -1,59 +1,77 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
+import { apiClient } from "../../utils/apiclient"
+import { useLocation } from "react-router-dom";
 
 const Soal = () => {
-  const [sessions, setSessions] = useState([
-    {
-      id: 1,
-      session_type: "Listening",
-      questions: [
-        {
-          question_number: 1,
-          id: 1,
-          text: "What did the audio say?",
-          audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-          image: "https://via.placeholder.com/150",
-          options: ["Option A", "Option B", "Option C"],
-          selected_answer: null,
-          play_count: 0,
-        },
-        {
-          question_number: 2,
-          id: 2,
-          text: "Choose the correct option:",
-          options: ["Option 1", "Option 2", "Option 3"],
-          selected_answer: null,
-        },
-      ],
-    },
-    {
-      id: 2,
-      session_type: "Structure",
-      questions: [
-        {
-          question_number: 1,
-          id: 1,
-          text: "Identify the synonym of 'happy':",
-          image: "https://via.placeholder.com/150",
-          options: ["Sad", "Joyful", "Angry"],
-          selected_answer: null,
-        },
-      ],
-    },
-    {
-      id: 3,
-      session_type: "Reading",
-      questions: [
-        {
-          question_number: 1,
-          id: 1,
-          text: "Complete the sentence: 'She is ____ than her brother.'",
-          options: ["taller", "shorter", "older"],
-          selected_answer: null,
-        },
-      ],
-    },
-  ]);
+
+
+
+  const [sessions, setSessions] = useState([{
+    id: 1,
+    session_type: "Listening",
+    questions: [
+      {
+        question_number: 1,
+        id: 1,
+        text: "What did the audio say?",
+        audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        image: "https://via.placeholder.com/150",
+        options: ["Option A", "Option B", "Option C"],
+        selected_answer: null,
+        play_count: 0,
+      },
+      {
+        question_number: 2,
+        id: 2,
+        text: "Choose the correct option:",
+        options: ["Option 1", "Option 2", "Option 3"],
+        selected_answer: null,
+      },
+    ],
+  },
+  {
+    id: 2,
+    session_type: "Structure",
+    questions: [
+      {
+        question_number: 1,
+        id: 1,
+        text: "Identify the synonym of 'happy':",
+        image: "https://via.placeholder.com/150",
+        options: ["Sad", "Joyful", "Angry"],
+        selected_answer: null,
+      },
+    ],
+  },
+  {
+    id: 3,
+    session_type: "Reading",
+    questions: [
+      {
+        question_number: 1,
+        id: 1,
+        text: "Complete the sentence: 'She is ____ than her brother.'",
+        options: ["taller", "shorter", "older"],
+        selected_answer: null,
+      },
+    ],
+  },]);
+  const location = useLocation();
+  const testState = location.state;
+
+  const fetchData = async () => {
+
+    const data = await apiClient.get('/test/code/' + testState.test_code)
+    setSessions(data.data.data.sessions)
+      
+    
+  }
+  
+  useEffect(()=> {
+    fetchData()
+  }, [])
+
 
   const [currentSessionIndex, setCurrentSessionIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -136,7 +154,7 @@ const Soal = () => {
               <strong>Waktu tersisa: {formatTime(timeLeft)}</strong>
             </h4>
           </div>
-          <Card>
+          <Card className="text-unmuted">
             <Card.Header>
               <Card.Title as="h5">{currentSession.session_type}</Card.Title>
             </Card.Header>

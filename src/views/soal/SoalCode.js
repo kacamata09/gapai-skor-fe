@@ -35,9 +35,8 @@ const InputCodeSoal = () => {
                   <Form.Control
                     onChange={(e)=> {
                       e.preventDefault()
-                      const { name, value } = e.target;
+                      const { value } = e.target;
                       setTestCode(value)
-                      console.log(name)
                     }}
                     className="mx-2"
                     type="text"
