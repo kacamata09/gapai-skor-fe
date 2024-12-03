@@ -50,12 +50,12 @@ const routes = [
     routes: [
       {
         exact: 'true',
-        path: '/admin/soal',
+        path: '/admin_soal',
         element: lazy(() => import('./views/soal/BuatSoal'))
       },
       {
         exact: 'true',
-        path: '/admin/test',
+        path: '/admin_test',
         element: lazy(() => import('./views/soal/InputTestAdmin'))
       },
       {
