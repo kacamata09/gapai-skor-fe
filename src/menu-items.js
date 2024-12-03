@@ -265,7 +265,7 @@ if (data_user && data_user.role == 'Admin') {
           title: ' Test',
           type: 'item',
           icon: 'feather icon-file-text',
-          url: '/admin/test'
+          url: '/admin_test'
         },
         // {
         //   id: 'table',

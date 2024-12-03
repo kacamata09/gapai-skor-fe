@@ -63,12 +63,7 @@ const routes = [
         path: '/',
         element: lazy(() => import('./views/dashboard'))
       },
-      
-      {
-        exact: 'true',
-        path: '/admin/soal',
-        element: lazy(() => import('./views/soal/BuatSoal'))
-      },
+
       {
         exact: 'true',
         path: '/soal',
