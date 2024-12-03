@@ -9,7 +9,6 @@ const InputTestAdmin = () => {
 
     const data = await apiClient.get('/test')
     setTableData(data.data.data)
-      
     
   }
   
@@ -111,7 +110,14 @@ const InputTestAdmin = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {tableData.map((row) => (
+                {tableData.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="text-center">
+                      Data tidak ada
+                    </td>
+                  </tr>
+                ) : (
+                  tableData.map((row) => (
                     <tr key={row.id}>
                       <td>{row.test_code}</td>
                       <td>{row.test_title}</td>
@@ -143,8 +149,10 @@ const InputTestAdmin = () => {
                         </Button>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
+                  ))
+                )}
+              </tbody>
+
               </Table>
             </Card.Body>
           </Card>

@@ -13,11 +13,19 @@ const BuatSoal = () => {
 
 
   const fetchData = async () => {
-
-    const data = await apiClient.get('/question/test_id/' + testState.test_id)
-    setSoals(data.data.data)
+    try {
       
-    console.log(data)
+      const data = await apiClient.get('/question/test_id/' + testState.test_id)
+      setSoals(data.data.data)
+      if (data.data.data == null)  {
+      setSoals([])
+      }
+      console.log(soals)
+      console.log(data)
+    } catch (error) {
+      setSoals([])
+    }
+
     
   }
   
@@ -312,7 +320,8 @@ const BuatSoal = () => {
             </Card.Header>
             <Card.Body>
               <ul>
-                {sortedSoals.map((item, index) => (
+              {(soals || soals.length > 0) ? (
+                sortedSoals.map((item, index) => (
                   <li key={index}>
                     <div>
                       <strong>{item.content_question}</strong>
@@ -326,9 +335,9 @@ const BuatSoal = () => {
                           {/* <source src={URL.createObjectURL(item.audio_url)} type="audio/mpeg" /> */}
                           <source src={item.audio_url} type="audio/mpeg" />
                           <track
-                          kind="captions"
-                          srcLang="en"
-                          label="English captions"
+                            kind="captions"
+                            srcLang="en"
+                            label="English captions"
                           />
                           Your browser does not support the audio element.
                         </audio>
@@ -344,7 +353,11 @@ const BuatSoal = () => {
                       </Button>
                     </div>
                   </li>
-                ))}
+                ))
+              ) : (
+                <p>No data available</p>
+              )}
+
               </ul>
             </Card.Body>
           </Card>

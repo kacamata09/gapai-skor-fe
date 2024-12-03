@@ -1,8 +1,8 @@
 {
-  "name": "datta-able-free-react-admin-template",
+  "name": "gapaiskor",
   "version": "2.0.0",
   "private": false,
-  "homepage": "https://codedthemes.com/demos/admin-templates/datta-able/react/free/",
+  "homepage": "/",
   "license": "MIT",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
