@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { ListGroup, Dropdown, Modal, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { getLocalStorageItem } from '../../../../utils/localStorage';
 import ChatList from './ChatList';
 
 import avatar1 from '../../../../assets/images/user/avatar-1.jpg';
 
 const NavRight = () => {
+  
   const [listOpen, setListOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate(); // Untuk navigasi setelah logout
+
+  const dataUser = getLocalStorageItem('dataUser')
 
   const handleLogout = () => {
     // Hapus dataUser dari localStorage
@@ -32,7 +35,7 @@ const NavRight = () => {
             <Dropdown.Menu align="end" className="profile-notification">
               <div className="pro-head">
                 <img src={avatar1} className="img-radius" alt="User Profile" />
-                <span>John Doe</span>
+                <span>{dataUser.fullname}</span>
                 <Link to="#" className="dud-logout" title="Logout" onClick={handleModalShow}>
                   <i className="feather icon-log-out" />
                 </Link>

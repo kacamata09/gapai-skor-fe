@@ -133,7 +133,7 @@ const SignUp1 = () => {
                   </form>
                   <p className="mb-2">
                     Sudah punya akun?{' '}
-                    <NavLink to="/auth/signin-1" className="f-w-400">
+                    <NavLink to="/register" className="f-w-400">
                       Login
                     </NavLink>
                   </p>

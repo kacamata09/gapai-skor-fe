@@ -39,7 +39,7 @@ const routes = [
   },
   {
     exact: 'true',
-    path: '/auth/signup-1',
+    path: '/register',
     element: lazy(() => import('./views/auth/signup/SignUp1')),
     guard: PublicGuard, // Hanya bisa diakses jika belum login
   },

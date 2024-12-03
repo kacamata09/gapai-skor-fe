@@ -30,7 +30,7 @@ const ResetPassword1 = () => {
                   <button className="btn btn-primary mb-4">Reset password</button>
                   <p className="mb-0 text-muted">
                     Don’t have an account?{' '}
-                    <NavLink to="/auth/signup-1" className="f-w-400">
+                    <NavLink to="/register" className="f-w-400">
                       Signup
                     </NavLink>
                   </p>

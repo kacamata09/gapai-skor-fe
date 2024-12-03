@@ -3,20 +3,43 @@ import { Row, Col, Card, Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 const InputCodeSoal = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
+  // Data tombol untuk tes sebelumnya
   const buttons = [
     { variant: 'primary', label: 'Klaim Sertifikat Tes Sebelumnya', icon: 'feather icon-check', link: "https://api.whatsapp.com/send?phone=6285795596736" },
-    { variant: 'secondary', label: 'Lihat Riwayat Tes', icon: 'feather icon-eye', link: "/riwayat_test" },
+    { variant: 'danger', label: 'Lihat Riwayat Tes', icon: 'feather icon-eye', link: "/riwayat_test" },
   ];
 
-  const [testCode, setTestCode] = useState("test")
+  const [testCode, setTestCode] = useState("test");
 
-    const handleBuatSoalNavigation = () => {
-      navigate('/soal', { state: { test_code: testCode } });
-    };    
-        
-  return ( 
+  const handleBuatSoalNavigation = () => {
+    navigate('/soal', { state: { test_code: testCode } });
+  };
+
+  // Data soal MBTI
+  const mbtiTests = [
+    {
+      title: "Tes MBTI - Introvert vs Extrovert",
+      description:
+        "Tes ini membantu Anda memahami apakah Anda cenderung introvert atau extrovert.",
+      disabled: true,
+    },
+    {
+      title: "Tes MBTI - Sensing vs Intuition",
+      description:
+        "Tes ini membantu Anda menentukan cara Anda mengumpulkan informasi, melalui penginderaan atau intuisi.",
+      disabled: true,
+    },
+    {
+      title: "Tes MBTI - Thinking vs Feeling",
+      description:
+        "Tes ini mengidentifikasi bagaimana Anda membuat keputusan, berdasarkan logika atau perasaan.",
+      disabled: true,
+    },
+  ];
+
+  return (
     <React.Fragment>
       <Row className="mb-4">
         {/* Kartu Masukkan Kode */}
@@ -33,10 +56,10 @@ const InputCodeSoal = () => {
                 <Form.Group className="d-inline-flex align-items-center mx-3">
                   <Form.Label className="mb-0">Kode:</Form.Label>
                   <Form.Control
-                    onChange={(e)=> {
-                      e.preventDefault()
+                    onChange={(e) => {
+                      e.preventDefault();
                       const { value } = e.target;
-                      setTestCode(value)
+                      setTestCode(value);
                     }}
                     className="mx-2"
                     type="text"
@@ -62,12 +85,12 @@ const InputCodeSoal = () => {
             <Card.Body className="d-flex flex-column justify-content-center">
               {buttons.map((button, idx) => (
                 <Button
-                  onClick={(e)=> {
-                    e.preventDefault()
+                  onClick={(e) => {
+                    e.preventDefault();
                     if (button.link.startsWith("http")) {
                       window.location.href = button.link; // Arahkan ke tautan sertifikat
                     } else {
-                      navigate(button.link)
+                      navigate(button.link);
                     }
                   }}
                   key={idx}
@@ -83,32 +106,35 @@ const InputCodeSoal = () => {
         </Col>
       </Row>
 
-        {/* Kartu Tes Kepribadian */}
-      {/* <Row>
+      {/* Kartu Tes Kepribadian */}
+      <Row>
         <Col sm={12}>
           <Card>
             <Card.Header>
-              <Card.Title as="h5">Tes Kepribadian</Card.Title>
+              <Card.Title as="h5">Tes Kepribadian (COMING SOON)</Card.Title>
             </Card.Header>
             <Card.Body>
               <Row>
-                {[1, 2, 3].map((_, index) => (
+                {mbtiTests.map((test, index) => (
                   <Col md={4} key={index}>
-                    <Form>
-                      <h4>Tes MBTI</h4>
-                      <Card.Text className="text-muted mb-4">
-                        Tes MBTI memberikan hasil tentang tipe kepribadian Anda, seperti introvert atau extrovert.
-                      </Card.Text>
-                      <Button variant="primary">Kerjakan</Button>
-                    </Form>
+                    <Card className="mb-3">
+                      <Card.Body>
+                        <h4>{test.title}</h4>
+                        <Card.Text className="text-muted mb-4">
+                          {test.description}
+                        </Card.Text>
+                        <Button disabled={test.disabled} variant="secondary">
+                          {test.disabled ? "Kerjakan" : "Mulai"}
+                        </Button>
+                      </Card.Body>
+                    </Card>
                   </Col>
                 ))}
               </Row>
             </Card.Body>
           </Card>
         </Col>
-      </Row> */}
-      
+      </Row>
     </React.Fragment>
   );
 };

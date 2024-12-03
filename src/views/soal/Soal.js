@@ -62,7 +62,7 @@ const Soal = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false); // Modal error state
-  const [timeLeft, setTimeLeft] = useState(7200);
+  const [timeLeft, setTimeLeft] = useState(10);
   const [currentSessionIndex, setCurrentSessionIndex] = useState(0);
 
   const fetchData = async () => {
@@ -273,17 +273,20 @@ const Soal = () => {
 
       {/* Timeout Modal */}
       <Modal show={showModal} backdrop="static" keyboard={false}>
-        <Modal.Header>
-          <Modal.Title>Waktu Habis</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Terima kasih telah mengikuti ujian. Hasil Anda akan segera diproses.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
+      <Modal.Header closeButton>
+              <Modal.Title>Ujian Selesai</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Selamat anda telah menyelesaikan semua sesi soal! Nilai anda lebih dari 500, detail nilainya saat klaim Sertifikat
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="success" onClick={() => setShowModal(false)}>
+                Klaim Sertifikat
+              </Button>
+              <Button variant="secondary" onClick={() => setShowModal(false)}>
+                Tidak
+              </Button>
+            </Modal.Footer>
       </Modal>
     </React.Fragment>
   );

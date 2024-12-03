@@ -7,11 +7,13 @@ import { Row, Col, Card } from 'react-bootstrap';
 // import avatar3 from '../../assets/images/user/avatar-3.jpg';
 
 const dashSalesData = [
-  { title: 'Total Test Dikerjakan', amount: '30', icon: 'text-c-green', class: 'progress-c-theme' },
+
+
+  { title: 'Total Test Anda Kerjakan', amount: '0', icon: 'text-c-green', class: 'progress-c-theme' },
   // { title: 'Soal Berjalan', amount: '2.942.32', icon: 'icon-arrow-down text-c-red', class: 'progress-c-theme2' },
-  { title: 'Total Sertifikat Diklaim', amount: '20', icon: 'text-c-green', color: 'progress-c-theme' },
-  { title: 'Nilai TOEFL Tertiggi', amount: '502', icon: 'text-c-green', color: 'progress-c-theme' },
-  { title: 'Test MBTI', amount: 'INTP', icon: 'text-c-green', color: 'progress-c-theme' }
+  { title: 'Total Sertifikat Anda Klaim', amount: '0', icon: 'text-c-green', color: 'progress-c-theme' },
+  { title: 'Nilai TOEFL Tertiggi Anda', amount: '0', icon: 'text-c-green', color: 'progress-c-theme' },
+  { title: 'Test MBTI Anda', amount: '-', icon: 'text-c-green', color: 'progress-c-theme' }
 ];
 
 const DashDefault = () => {
