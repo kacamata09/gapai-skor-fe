@@ -71,11 +71,6 @@ const routes = [
       },
       {
         exact: 'true',
-        path: '/admin/test',
-        element: lazy(() => import('./views/soal/InputTestAdmin'))
-      },
-      {
-        exact: 'true',
         path: '/soal',
         element: lazy(() => import('./views/soal/Soal'))
       },
