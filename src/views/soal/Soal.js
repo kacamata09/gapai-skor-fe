@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
 import { apiClient } from "../../utils/apiclient";
 import { useLocation, useNavigate } from "react-router-dom";
+import { getLocalStorageItem } from "../../utils/localStorage";
 
 const Soal = () => {
+  const dataUser = getLocalStorageItem('dataUser')
+
+  const [dataAttempt, setDataAttempt ] = useState({})
   const [sessions, setSessions] = useState([
     {
       id: 1,
@@ -62,17 +66,30 @@ const Soal = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false); // Modal error state
-  const [timeLeft, setTimeLeft] = useState(10);
+  const [timeLeft, setTimeLeft] = useState(7200);
   const [currentSessionIndex, setCurrentSessionIndex] = useState(0);
 
+
+  
   const fetchData = async () => {
     try {
       const data = await apiClient.get(`/test/code/${testState.test_code}`);
-      setSessions(data.data.data.sessions);
-      console.log(data.data.data.sessions )
-      if (data.data.data.sessions[0].questions == null) {
+      const dataTest = data.data.data
+      setSessions(dataTest.sessions);
+      console.log(dataTest)
+      if (dataTest.sessions[0].questions == null) {
         setShowErrorModal(true); // Show error modal on fetch failure
       }
+
+      const formatDataTest = {
+        user_id: dataUser.id,
+        test_id : dataTest.id,
+      }
+      console.log(formatDataTest)
+      const response = await apiClient.post('/attempt', formatDataTest)
+      console.log(response)
+      setDataAttempt(response.data.data)
+
     } catch (error) {
       setShowErrorModal(true); // Show error modal on fetch failure
     } 
@@ -104,7 +121,16 @@ const Soal = () => {
       .padStart(2, "0")}`;
   };
 
-  const handleAnswerChange = (sessionId, questionId, answer) => {
+  const handleAnswerChange = async (sessionId, questionId, answer, answer_id) => {
+    const formatAttemptAnswer = {
+      attempt_id: dataAttempt.id,
+      question_id : questionId,
+      selected_answer_option_id : answer_id,
+    }
+    console.log(formatAttemptAnswer)
+    const response = await apiClient.post('/attempt/answer', formatAttemptAnswer)
+    console.log(response)
+
     const updatedSessions = sessions.map((session) => {
       if (session.id === sessionId) {
         const updatedQuestions = session.questions.map((question) =>
@@ -222,7 +248,7 @@ const Soal = () => {
                             name={`session-${currentSession.id}-question-${question.id}`}
                             id={`session-${currentSession.id}-question-${question.id}-option-${index}`}
                             onChange={() =>
-                              handleAnswerChange(currentSession.id, question.id, option)
+                              handleAnswerChange(currentSession.id, question.id, option, question.answer_id[index])
                             }
                             checked={question.selected_answer === option}
                           />
