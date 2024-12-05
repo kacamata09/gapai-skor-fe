@@ -16,7 +16,22 @@ const BuatSoal = () => {
     try {
       
       const data = await apiClient.get('/question/test_id/' + testState.test_id)
-      setSoals(data.data.data)
+      const dataSoal = data.data.data
+      const newFormatSoals = []
+      for (const soall of dataSoal) {
+        const formatOpti = []
+        for (const opti of soall.answer_options) {
+          formatOpti.push(opti.content_answer)
+        }
+        newFormatSoals.push({
+          ...soall,
+          option_text : formatOpti
+        })
+      }
+      
+      setSoals(newFormatSoals)
+      console.log("slasdih", newFormatSoals)
+
       if (data.data.data == null)  {
       setSoals([])
       }
@@ -52,7 +67,7 @@ const BuatSoal = () => {
   });
   const [soals, setSoals] = useState([]); // Daftar soal
   const [isEdit, setIsEdit] = useState(false); // Menandakan jika sedang mengedit
-  // const [editIndex, setEditIndex] = useState(null); // Index soal yang sedang diedit
+  const [editIndex, setEditIndex] = useState(null); // Index soal yang sedang diedit
   const [showModal, setShowModal] = useState(false); // Menampilkan modal konfirmasi hapus
   const [deleteIndex, setDeleteIndex] = useState(null); // Menyimpan index soal yang akan dihapus
 
@@ -221,25 +236,39 @@ const BuatSoal = () => {
     e.preventDefault();
     if (soal.content_question) {
       try {
+        if (isEdit) {
+          // Jika sedang dalam mode edit, update soal yang ada
+          const updatedSoals = [...soals];
+          updatedSoals[editIndex] = soal;
+
+          console.log(soal, "tidak mauuuuuuuuuuuu")
+          setSoals(updatedSoals);
+          
+        } else {
+          const answerOptions = soal.option_text.map((option, i) => ({
+            is_correct: i === soal.correctOption ? 1 : 0,
+            content_answer: option
+          }));
+  
+          // Prepare the payload
+          const payload = {
+            ...soal,
+            answer_options: answerOptions
+          };
+  
+          // Remove option_text and correctOption before sending
+          delete payload.option_text;
+          delete payload.correctOption;
+  
+          // Send the data
+          const response = await apiClient.post('/question_options', payload);
+          console.log(response)
+        }
+        fetchData()
+        setIsEdit(false); // Reset mode edit
+        setEditIndex(null); // Reset index edit
         // Prepare answer options
-        const answerOptions = soal.option_text.map((option, i) => ({
-          is_correct: i === soal.correctOption ? 1 : 0,
-          content_answer: option
-        }));
 
-        // Prepare the payload
-        const payload = {
-          ...soal,
-          answer_options: answerOptions
-        };
-
-        // Remove option_text and correctOption before sending
-        delete payload.option_text;
-        delete payload.correctOption;
-
-        // Send the data
-        const response = await apiClient.post('/question_options', payload);
-        console.log(response)
         // Reset the form
         setSoal({ 
           test_id: testState.test_id,
@@ -433,7 +462,7 @@ const BuatSoal = () => {
                       <br />
                       Tipe: {item.question_type}, Nomor: {item.question_number}
                       <br />
-                      {/* Opsi Jawaban: {item.option_text.join(', ')} */}
+                      Opsi Jawaban: {item.option_text.join(', ')}
                       <br />
                       {item.audio_url && (
                         <audio controls className="mb-3">
