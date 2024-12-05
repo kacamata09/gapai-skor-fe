@@ -95,6 +95,21 @@ const Soal = () => {
     } 
   };
 
+  const getScore = async () => {
+    try {
+      const data = await apiClient.get(`/attempt/score/${dataAttempt.id}`);
+      setDataAttempt(data.data.data)
+      console.log(dataAttempt, "scorererrererer")
+      
+      const newScore = Math.floor(dataAttempt.score / 100) * 100;
+
+      setDataAttempt({...dataAttempt, score : newScore})
+      setShowModal(true);
+    } catch (error) {
+      console.log("gagal ambil skor")
+    } 
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -104,7 +119,7 @@ const Soal = () => {
       setTimeLeft((prevTime) => {
         if (prevTime <= 0) {
           clearInterval(timer);
-          setShowModal(true);
+          getScore()
           return 0;
         }
         return prevTime - 1;
@@ -127,7 +142,10 @@ const Soal = () => {
       question_id : questionId,
       selected_answer_option_id : answer_id,
     }
-    console.log(formatAttemptAnswer)
+
+
+
+    console.log(answer_id)
     const response = await apiClient.post('/attempt/answer', formatAttemptAnswer)
     console.log(response)
 
@@ -164,7 +182,7 @@ const Soal = () => {
     if (currentSessionIndex < sessions.length - 1) {
       setCurrentSessionIndex(currentSessionIndex + 1);
     } else {
-      setShowModal(true);
+      getScore()
     }
   };
 
@@ -303,7 +321,7 @@ const Soal = () => {
               <Modal.Title>Ujian Selesai</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              Selamat anda telah menyelesaikan semua sesi soal! Nilai anda lebih dari 500, detail nilainya saat klaim Sertifikat
+              Selamat anda telah menyelesaikan semua sesi soal! Nilai anda lebih dari {dataAttempt.score}, detail nilainya saat klaim Sertifikat
             </Modal.Body>
             <Modal.Footer>
               <Button variant="success" onClick={() => setShowModal(false)}>
