@@ -324,10 +324,10 @@ const Soal = () => {
               Selamat anda telah menyelesaikan semua sesi soal! Nilai anda lebih dari {dataAttempt.score}, detail nilainya saat klaim Sertifikat
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="success" onClick={() => setShowModal(false)}>
+              <Button variant="success" onClick={() => {navigate('/riwayat_test') ; setShowModal(false)}}>
                 Klaim Sertifikat
               </Button>
-              <Button variant="secondary" onClick={() => setShowModal(false)}>
+              <Button variant="secondary" onClick={() => {navigate('/') ; setShowModal(false)} }>
                 Tidak
               </Button>
             </Modal.Footer>

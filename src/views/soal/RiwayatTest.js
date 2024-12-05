@@ -1,36 +1,59 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Modal, Button, Container, Row, Col } from "react-bootstrap";
+import { apiClient } from "../../utils/apiclient";
+import { getLocalStorageItem } from "../../utils/localStorage";
+
 
 const TestHistory = () => {
-  const [testHistory] = useState([
-    {
-      id: 1,
-      title: "TOEFL Gapai try out",
-      date: "2024-11-20",
-      score: 85,
-      details: "Listening comprehension with audio.",
-      certificateAvailable: true,
-      certificateLink: "https://example.com/toefl-listening-cert",
-    },
-    {
-      id: 2,
-      title: "TOEFL Gapai Skor prediction",
-      date: "2024-11-21",
-      score: 90,
-      details: "Reading comprehension with passage analysis.",
-      certificateAvailable: true,
-      certificateLink: "https://example.com/toefl-reading-cert",
-    },
-    {
-      id: 3,
-      title: "TOEFL Gapai Skor Certificate",
-      date: "2024-11-22",
-      score: 88,
-      details: "Grammar and sentence structure evaluation.",
-      certificateAvailable: false,
-      certificateLink: "", // Link kosong jika tidak tersedia
-    },
+
+
+  const dataUser = getLocalStorageItem('dataUser')
+
+  const [testHistory, setTestHistory] = useState([
+    // {
+    //   id: 1,
+    //   test_title: "TOEFL Gapai try out",
+    //   attempt_date: "2024-11-20",
+    //   score: 85,
+    //   details: "Listening comprehension with audio.",
+    //   certificateAvailable: true,
+    //   certificateLink: "https://example.com/toefl-listening-cert",
+    // }
   ]);
+
+  const fetchData = async () => {
+    try {
+      const data = await apiClient.get(`/attempt/history/${dataUser.id}`);
+      const dataAttempt = data.data.data
+      console.log(dataAttempt)
+      const newAttempt = []
+      for (const i of dataAttempt) {
+
+        const newScore = Math.floor(i.score / 100) * 100;
+        const formatDataHistory = {
+            ...i,
+            score : newScore,
+            details: "Listening comprehension with audio.",
+            certificateAvailable: true,
+            certificateLink: "https://example.com/toefl-listening-cert",
+        }
+        newAttempt.push(formatDataHistory)
+      }
+      setTestHistory(newAttempt)
+      console.log(testHistory)
+      
+
+    } catch (error) {
+      console.log(error)
+    } 
+  };
+
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+
 
   const [showModal, setShowModal] = useState(false);
   const [selectedTest, setSelectedTest] = useState(null);
@@ -65,9 +88,9 @@ const TestHistory = () => {
               onClick={() => handleCardClick(test)}
             >
               <Card.Body>
-                <Card.Title>{test.title}</Card.Title>
+                <Card.Title>{test.test_title}</Card.Title>
                 <Card.Text>
-                  <strong>Date:</strong> {test.date}
+                  <strong>Date:</strong> {test.attempt_date}
                 </Card.Text>
                 <Card.Text>
                   <strong>Score: Diatas</strong> {test.score}
@@ -86,9 +109,9 @@ const TestHistory = () => {
         <Modal.Body className="">
           {selectedTest && (
             <>
-              <h4>{selectedTest.title}</h4>
+              <h4>{selectedTest.test_title}</h4>
               <h5>
-                <strong>Date:</strong> {selectedTest.date}
+                <strong>Date:</strong> {selectedTest.attempt_date}
               </h5>
               <h5>
                 <strong>Score: Diatas</strong> {selectedTest.score}
