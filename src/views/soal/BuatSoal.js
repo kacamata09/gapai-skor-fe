@@ -79,13 +79,70 @@ const BuatSoal = () => {
     setSoal({ ...soal, option_text: newOptions });
   };
 
-  const handleAddAudio = (e) => {
-    setSoal({ ...soal, audio_url: e.target.files[0] }); // Update 'audio' menjadi 'audio_url'
+  const handleAddAudio = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      try {
+        // Create FormData to upload the file
+        const formData = new FormData();
+        formData.append('file', file);
+
+        // Upload the file to the server
+        const uploadResponse = await apiClient.post('/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+
+        // Set the returned URL to audio_url
+        setSoal({ 
+          ...soal, 
+          audio_url: uploadResponse.data.data.file // Assuming the server returns the URL of the uploaded file
+        });
+      } catch (error) {
+        console.error('Audio upload failed:', error);
+        alert('Failed to upload audio file');
+      }
+    }
   };
 
-  const handleAddImage = (e) => {
-    setSoal({ ...soal, image_url: e.target.files[0] }); // Menambahkan image_url
+  const handleAddImage = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      try {
+        // Create FormData to upload the file
+        const formData = new FormData();
+        formData.append('file', file);
+
+        // Upload the file to the server
+        const uploadResponse = await apiClient.post('/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+
+        console.log("rseponsedsdsdsdssss", uploadResponse.data.data.file)
+        // Set the returned URL to image_url
+        setSoal({ 
+          ...soal, 
+          image_url: uploadResponse.data.data.file // Assuming the server returns the URL of the uploaded file
+        });
+
+        console.log("soalllll", soal)
+      } catch (error) {
+        console.error('Image upload failed:', error);
+        alert('Failed to upload image file');
+      }
+    }
   };
+
+  // const handleAddAudio = (e) => {
+  //   setSoal({ ...soal, audio_url: e.target.files[0] }); // Update 'audio' menjadi 'audio_url'
+  // };
+
+  // const handleAddImage = (e) => {
+  //   setSoal({ ...soal, image_url: e.target.files[0] }); // Menambahkan image_url
+  // };
 
   const handleTypeChange = (e) => {
     setSoal({ ...soal, question_type: e.target.value }); // Update 'type' menjadi 'question_type'
@@ -114,50 +171,98 @@ const BuatSoal = () => {
   //   }
   // };
 
-  const handleAddData = async (e) => {
+  // const handleAddData = async (e) => {
 
-    console.log('sfsf')
+  //   console.log('sfsf')
+  //   e.preventDefault();
+  //   if (soal.content_question) {
+  //     try {
+  //       console.log(soal)
+  //       for (let i in soal.option_text) {
+  //         console.log("soal")
+
+  //         let optionFormat = {
+  //           is_correct : i == soal.correctOption ? 1 : 0,
+  //           content_answer : soal.option_text[i]
+  //         }
+  //         soal.answer_options.push(optionFormat)
+  //         console.log("tyyadf")
+  //       }
+  //       console.log(soal)
+
+  //       const response = await apiClient.post('/question_options', soal)
+  //       // const response = await apiClient.post('/test', {test_code: "manai", test_title: 'Larry', duration: 0, created_by: '' })
+  //       console.log(response.data)
+  //       // Redirect or do something after successful login
+  //         // setTableData([...tableData, newEntry]);
+  //         setSoal({ 
+  //           test_code: 'nanti dari state yang halaman test akan mengisi ini',
+  //           test_id : testState.test_id,
+  //           content_question: '', // Ganti 'text' menjadi 'content_question'
+  //           option_text: ['', '', '', ''],
+  //           correctOption: null, // Menyimpan indeks jawaban yang benar
+  //           answer_options: [],
+  //           // audio_url: null, // Ganti 'audio' menjadi 'audio_url'
+  //           audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Ganti 'audio' menjadi 'audio_url'
+  //           image_url: null, // Menambahkan image_url
+  //           question_number: 0,
+  //           question_type: 'Listening', // Ganti 'type' menjadi 'question_type'
+  //         });
+  //         fetchData()
+  //     } catch (error) {
+  //       console.log('Add data failed and try again.');
+  //       console.error('Error failed:', error);
+  //     }
+  //   }
+  // }
+
+
+  const handleAddData = async (e) => {
     e.preventDefault();
     if (soal.content_question) {
       try {
-        console.log(soal)
-        for (let i in soal.option_text) {
-          console.log("soal")
+        // Prepare answer options
+        const answerOptions = soal.option_text.map((option, i) => ({
+          is_correct: i === soal.correctOption ? 1 : 0,
+          content_answer: option
+        }));
 
-          let optionFormat = {
-            is_correct : i == soal.correctOption ? 1 : 0,
-            content_answer : soal.option_text[i]
-          }
-          soal.answer_options.push(optionFormat)
-          console.log("tyyadf")
-        }
-        console.log(soal)
+        // Prepare the payload
+        const payload = {
+          ...soal,
+          answer_options: answerOptions
+        };
 
-        const response = await apiClient.post('/question_options', soal)
-        // const response = await apiClient.post('/test', {test_code: "manai", test_title: 'Larry', duration: 0, created_by: '' })
-        console.log(response.data)
-        // Redirect or do something after successful login
-          // setTableData([...tableData, newEntry]);
-          setSoal({ 
-            test_code: 'nanti dari state yang halaman test akan mengisi ini',
-            test_id : testState.test_id,
-            content_question: '', // Ganti 'text' menjadi 'content_question'
-            option_text: ['', '', '', ''],
-            correctOption: null, // Menyimpan indeks jawaban yang benar
-            answer_options: [],
-            // audio_url: null, // Ganti 'audio' menjadi 'audio_url'
-            audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Ganti 'audio' menjadi 'audio_url'
-            image_url: null, // Menambahkan image_url
-            question_number: 0,
-            question_type: 'Listening', // Ganti 'type' menjadi 'question_type'
-          });
-          fetchData()
+        // Remove option_text and correctOption before sending
+        delete payload.option_text;
+        delete payload.correctOption;
+
+        // Send the data
+        const response = await apiClient.post('/question_options', payload);
+        console.log(response)
+        // Reset the form
+        setSoal({ 
+          test_id: testState.test_id,
+          content_question: '',
+          option_text: ['', '', '', ''],
+          answer_options: [],
+          correctOption: null,
+          audio_url: null,
+          image_url: null,
+          question_number: 0,
+          question_type: 'Listening',
+        });
+
+        // Refresh the data
+        fetchData();
       } catch (error) {
-        console.log('Add data failed and try again.');
-        console.error('Error failed:', error);
+        console.log('Add data failed. Please try again.');
+        console.error('Error:', error);
+        alert('Failed to add question. Please check your inputs.');
       }
     }
-  }
+  };
+
 
   const handleEditSoal = (index) => {
     setSoal(soals[index]);
