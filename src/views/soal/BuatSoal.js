@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Card, Form, Button, InputGroup, Modal } from 'react-bootstrap';
 import apiClient from '../../utils/apiclient';
 import { useLocation } from 'react-router-dom';
@@ -8,6 +8,10 @@ const BuatSoal = () => {
 
   const location = useLocation();
   const testState = location.state;
+
+  const imageInputRef = useRef(null);
+  const audioInputRef = useRef(null);
+
 
   console.log('State from navigate:', testState)
 
@@ -240,9 +244,8 @@ const BuatSoal = () => {
           // Jika sedang dalam mode edit, update soal yang ada
           const updatedSoals = [...soals];
           updatedSoals[editIndex] = soal;
-
-          console.log(soal, "tidak mauuuuuuuuuuuu")
-          setSoals(updatedSoals);
+          const response_upd = await apiClient.put('/question_options/' + soal.id, soal);
+          console.log(response_upd, "tidak mauuuuuuuuuuuu")
           
         } else {
           const answerOptions = soal.option_text.map((option, i) => ({
@@ -281,6 +284,9 @@ const BuatSoal = () => {
           question_number: 0,
           question_type: 'Listening',
         });
+        // Reset input file fields
+        if (imageInputRef.current) imageInputRef.current.value = "";
+        if (audioInputRef.current) audioInputRef.current.value = "";
 
         // Refresh the data
         fetchData();
@@ -304,10 +310,11 @@ const BuatSoal = () => {
     setShowModal(true); // Menampilkan modal konfirmasi hapus
   };
 
-  const handleConfirmDelete = () => {
-    const updatedSoals = [...soals];
-    updatedSoals.splice(deleteIndex, 1); // Menghapus soal dari daftar
-    setSoals(updatedSoals);
+  const handleConfirmDelete = async () => {
+    const soal = soals[deleteIndex]
+    const response = await apiClient.delete('/question/' + soal.id);
+    console.log(response)
+    fetchData()
     setShowModal(false); // Menutup modal
     setDeleteIndex(null); // Reset index delete
   };
@@ -382,6 +389,7 @@ const BuatSoal = () => {
                   <Form.Control
                     type="file"
                     accept="audio/*"
+                    ref={audioInputRef}
                     onChange={handleAddAudio} // Update 'audio' menjadi 'audio_url'
                   />
                 </Form.Group>
@@ -391,6 +399,7 @@ const BuatSoal = () => {
                   <Form.Control
                     type="file"
                     accept="image/*"
+                    ref={imageInputRef}
                     onChange={handleAddImage} // Menambahkan gambar
                   />
                 </Form.Group>
