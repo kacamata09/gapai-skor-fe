@@ -7,7 +7,7 @@ const InputCodeSoal = () => {
 
   // Data tombol untuk tes sebelumnya
   const buttons = [
-    { variant: 'primary', label: 'Klaim Sertifikat Tes Sebelumnya', icon: 'feather icon-check', link: "https://api.whatsapp.com/send?phone=6285795596736" },
+    { variant: 'primary', label: 'Klaim Sertifikat Tes Sebelumnya', icon: 'feather icon-check', link: "https://lynk.id/gapaiskor" },
     { variant: 'danger', label: 'Lihat Riwayat Tes', icon: 'feather icon-eye', link: "/riwayat_test" },
   ];
 

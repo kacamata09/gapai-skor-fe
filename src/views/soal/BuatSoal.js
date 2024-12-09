@@ -11,6 +11,8 @@ const BuatSoal = () => {
 
   const imageInputRef = useRef(null);
   const audioInputRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false)
+  const [showModalUpload, setShowModalUpload] = useState(false);
 
 
   console.log('State from navigate:', testState)
@@ -114,6 +116,8 @@ const BuatSoal = () => {
         });
 
         // Set the returned URL to audio_url
+        setIsLoading(true)
+        setShowModalUpload(true); // Show success modal
         setSoal({ 
           ...soal, 
           audio_url: uploadResponse.data.data.file // Assuming the server returns the URL of the uploaded file
@@ -124,6 +128,12 @@ const BuatSoal = () => {
       }
     }
   };
+
+  const handleCloseModalUpload = () => {
+    setShowModalUpload(false);
+    setIsLoading(false);
+  };
+
 
   const handleAddImage = async (e) => {
     const file = e.target.files[0];
@@ -142,10 +152,13 @@ const BuatSoal = () => {
 
         console.log("rseponsedsdsdsdssss", uploadResponse.data.data.file)
         // Set the returned URL to image_url
+        setIsLoading(true)
+        setShowModalUpload(true); // Show success modal
         setSoal({ 
           ...soal, 
           image_url: uploadResponse.data.data.file // Assuming the server returns the URL of the uploaded file
         });
+
 
         console.log("soalllll", soal)
       } catch (error) {
@@ -390,8 +403,10 @@ const BuatSoal = () => {
                     type="file"
                     accept="audio/*"
                     ref={audioInputRef}
+                    disabled = {isLoading}
                     onChange={handleAddAudio} // Update 'audio' menjadi 'audio_url'
                   />
+                  {/* {isLoading ? "Sedang upload..." : "Berhasil Upload"} */}
                 </Form.Group>
 
                 <Form.Group controlId="formBasicImage">
@@ -399,9 +414,11 @@ const BuatSoal = () => {
                   <Form.Control
                     type="file"
                     accept="image/*"
+                    disabled = {isLoading}
                     ref={imageInputRef}
                     onChange={handleAddImage} // Menambahkan gambar
                   />
+                  {/* {isLoading ? "Sedang upload..." : "Berhasil Upload"} */}
                 </Form.Group>
 
                 <Form.Group controlId="formBasicType">
@@ -429,7 +446,7 @@ const BuatSoal = () => {
 
                 <div className="d-flex justify-content-between mt-4">
                   <form onSubmit={handleAddData}>
-                  <Button variant="primary" type='submit' onClick={handleAddData}>
+                  <Button disabled={isLoading} variant="primary" type='submit' onClick={handleAddData}>
                     {isEdit ? 'Update Soal' : 'Tambah Soal'}
                   </Button>
                   </form>
@@ -519,6 +536,33 @@ const BuatSoal = () => {
           </Button>
           <Button variant="danger" onClick={handleConfirmDelete}>
             Hapus
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Konfirmasi Hapus</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Apakah Anda yakin ingin menghapus soal ini?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Batal
+          </Button>
+          <Button variant="danger" onClick={handleConfirmDelete}>
+            Hapus
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showModalUpload} onHide={handleCloseModalUpload}>
+        <Modal.Header closeButton>
+          <Modal.Title>Berhasil</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>File Anda telah berhasil di-upload!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleCloseModalUpload}>
+            Tutup
           </Button>
         </Modal.Footer>
       </Modal>
