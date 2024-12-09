@@ -105,6 +105,7 @@ const BuatSoal = () => {
     if (file) {
       try {
         // Create FormData to upload the file
+        setIsLoading(true)
         const formData = new FormData();
         formData.append('file', file);
 
@@ -116,7 +117,6 @@ const BuatSoal = () => {
         });
 
         // Set the returned URL to audio_url
-        setIsLoading(true)
         setShowModalUpload(true); // Show success modal
         setSoal({ 
           ...soal, 
@@ -140,6 +140,7 @@ const BuatSoal = () => {
     if (file) {
       try {
         // Create FormData to upload the file
+        setIsLoading(true)
         const formData = new FormData();
         formData.append('file', file);
 
@@ -152,7 +153,6 @@ const BuatSoal = () => {
 
         console.log("rseponsedsdsdsdssss", uploadResponse.data.data.file)
         // Set the returned URL to image_url
-        setIsLoading(true)
         setShowModalUpload(true); // Show success modal
         setSoal({ 
           ...soal, 
