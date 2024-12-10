@@ -112,7 +112,7 @@ const FirebaseLogin = ({ className, ...rest }) => {
                   type="submit"
                   variant="primary"
                 >
-                  Sign in
+                  Login
                 </Button>
               </Col>
             </Row>

@@ -124,7 +124,7 @@ const TestHistory = () => {
           {selectedTest && selectedTest.certificateAvailable ? (
             <Button
               variant="primary"
-              onClick={() => handleClaimCertificate("https://api.whatsapp.com/send?phone=6285795596736")}
+              onClick={() => handleClaimCertificate("https://lynk.id/gapaiskor")}
             >
               Claim Sertifikat
             </Button>
