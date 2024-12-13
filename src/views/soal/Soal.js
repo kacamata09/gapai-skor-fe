@@ -217,33 +217,47 @@ const Soal = () => {
               {currentQuestions.length > 0 ? (
                 currentQuestions.map((question) => (
                   <div key={question.id} className="mb-4">
-                    {question.audio && (
-                      <>
-                        <Card.Text>Listen to the audio and answer the question:</Card.Text>
-                        <audio
-                          controls
-                          className="mb-3"
-                          onPlay={() => handleAudioPlay(currentSession.id, question.id)}
-                          onEnded={() => {
-                            if (question.play_count >= 1) {
-                              const audioElement = document.querySelector(
-                                `audio[src="${question.audio}"]`
-                              );
-                              if (audioElement) {
-                                audioElement.controls = false;
-                              }
-                            }
-                          }}
-                        >
-                          <source src={question.audio} type="audio/mpeg" />
-                          <track kind="captions" srcLang="en" label="English captions" />
-                          Your browser does not support the audio element.
-                        </audio>
-                        <p className="text-muted">
-                          Note: Audio can only be played 2 times.
-                        </p>
-                      </>
-                    )}
+                  {question.audio && (
+                        <>
+                          {/\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(question.audio) ? (
+                            <>
+                              <Card.Text>Look at the image and answer the question:</Card.Text>
+                              <img
+                                src={question.audio}
+                                alt="Question related"
+                                className="img-fluid mb-3"
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <Card.Text>Listen to the audio and answer the question:</Card.Text>
+                              <audio
+                                controls
+                                className="mb-3"
+                                onPlay={() => handleAudioPlay(currentSession.id, question.id)}
+                                onEnded={() => {
+                                  if (question.play_count >= 1) {
+                                    const audioElement = document.querySelector(
+                                      `audio[src="${question.audio}"]`
+                                    );
+                                    if (audioElement) {
+                                      audioElement.controls = false;
+                                    }
+                                  }
+                                }}
+                              >
+                                <source src={question.audio} type="audio/mpeg" />
+                                <track kind="captions" srcLang="en" label="English captions" />
+                                Your browser does not support the audio element.
+                              </audio>
+                              {/* <p className="text-muted">
+                                Note: Audio can only be played 2 times.
+                              </p> */}
+                            </>
+                          )}
+                        </>
+                      )}
+
                     {question.image && (
                       <div className="mb-3">
                         <img

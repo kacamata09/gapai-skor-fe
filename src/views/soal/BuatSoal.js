@@ -11,6 +11,9 @@ const BuatSoal = () => {
 
   const imageInputRef = useRef(null);
   const audioInputRef = useRef(null);
+
+  const [fileType, setFileType] = useState('audio'); // State untuk menentukan tipe file
+  
   const [isLoading, setIsLoading] = useState(false)
   const [showModalUpload, setShowModalUpload] = useState(false);
 
@@ -397,16 +400,36 @@ const BuatSoal = () => {
                   </Button>
                 </Form.Group>
 
-                <Form.Group controlId="formBasicAudio">
-                  <Form.Label>Audio Soal</Form.Label>
+
+
+                {/* Input untuk upload file */}
+                <Form.Group controlId="formBasicFile">
+                  <Form.Label>{fileType === 'audio' ? 'Audio Soal' : 'Gambar Soal'}</Form.Label>
                   <Form.Control
                     type="file"
-                    accept="audio/*"
+                    accept={fileType === 'audio' ? 'audio/*' : 'image/*'}
                     ref={audioInputRef}
                     disabled = {isLoading}
-                    onChange={handleAddAudio} // Update 'audio' menjadi 'audio_url'
+                    onChange={handleAddAudio}
                   />
-                  {/* {isLoading ? "Sedang upload..." : "Berhasil Upload"} */}
+                </Form.Group>
+
+                
+                  {/* Switch untuk memilih tipe file */}
+                  <Form.Group controlId="formFileType">
+                  {/* <Form.Label>Pilih Tipe File</Form.Label> */}
+                  <div className="form-switch">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="fileTypeSwitch"
+                      checked={fileType === 'image'}
+                      onChange={() => setFileType(fileType === 'audio' ? 'image' : 'audio')}
+                    />
+                    <label className="form-check-label" htmlFor="fileTypeSwitch">
+                      {fileType === 'audio' ? 'Audio' : 'Gambar'}
+                    </label>
+                  </div>
                 </Form.Group>
 
                 <Form.Group controlId="formBasicImage">
