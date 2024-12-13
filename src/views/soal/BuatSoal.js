@@ -514,16 +514,23 @@ const BuatSoal = () => {
                       Opsi Jawaban: {item.option_text.join(', ')}
                       <br />
                       {item.audio_url && (
-                        <audio controls className="mb-3">
-                          {/* <source src={URL.createObjectURL(item.audio_url)} type="audio/mpeg" /> */}
-                          <source src={item.audio_url} type="audio/mpeg" />
-                          <track
-                            kind="captions"
-                            srcLang="en"
-                            label="English captions"
+                        /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(item.audio_url) ? (
+                          <img
+                            src={item.audio_url}
+                            alt="Question related"
+                            className="img-fluid mb-3"
                           />
-                          Your browser does not support the audio element.
-                        </audio>
+                        ) : (
+                          <audio controls className="mb-3">
+                            <source src={item.audio_url} type="audio/mpeg" />
+                            <track
+                              kind="captions"
+                              srcLang="en"
+                              label="English captions"
+                            />
+                            Your browser does not support the audio element.
+                          </audio>
+                        )
                       )}
                       {item.image_url && <img src={item.image_url} alt="Gambar soal" className="mb-3" />}
                     </div>
