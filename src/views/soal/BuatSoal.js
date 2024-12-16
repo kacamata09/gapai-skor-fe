@@ -324,7 +324,8 @@ const BuatSoal = () => {
   };
 
   const handleConfirmDelete = async () => {
-    const soal = soals[deleteIndex]
+    const soal = sortedSoals[deleteIndex]
+    console.log(soals)
     const response = await apiClient.delete('/question/' + soal.id);
     console.log(response)
     fetchData()
