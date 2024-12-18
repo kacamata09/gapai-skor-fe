@@ -131,17 +131,36 @@ const Soal = () => {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const handleAnswerChange = async (sessionId, questionId, answer, answer_id) => {
+  // const handleAnswerChange = async (sessionId, questionId, answer, answer_id) => {
+  //   const formatAttemptAnswer = {
+  //     attempt_id: dataAttempt.id,
+  //     question_id: questionId,
+  //     selected_answer_option_id: answer_id
+  //   };
+
+  //   console.log(answer_id);
+  //   const response = await apiClient.post('/attempt/answer', formatAttemptAnswer);
+  //   console.log(response);
+
+  //   const updatedSessions = sessions.map((session) => {
+  //     if (session.id === sessionId) {
+  //       const updatedQuestions = session.questions.map((question) =>
+  //         question.id === questionId ? { ...question, selected_answer: answer } : question
+  //       );
+  //       return { ...session, questions: updatedQuestions };
+  //     }
+  //     return session;
+  //   });
+  //   setSessions(updatedSessions);
+  // };
+  const handleAnswerChange = (sessionId, questionId, answer, answer_id) => {
     const formatAttemptAnswer = {
       attempt_id: dataAttempt.id,
       question_id: questionId,
       selected_answer_option_id: answer_id
     };
 
-    console.log(answer_id);
-    const response = await apiClient.post('/attempt/answer', formatAttemptAnswer);
-    console.log(response);
-
+    // Update state terlebih dahulu
     const updatedSessions = sessions.map((session) => {
       if (session.id === sessionId) {
         const updatedQuestions = session.questions.map((question) =>
@@ -152,6 +171,12 @@ const Soal = () => {
       return session;
     });
     setSessions(updatedSessions);
+
+    // Kirim data ke server tanpa menunggu
+    apiClient
+      .post('/attempt/answer', formatAttemptAnswer)
+      .then((response) => console.log('API Response:', response))
+      .catch((error) => console.error('API Error:', error));
   };
 
   const handleAudioPlay = (sessionId, questionId) => {
