@@ -153,7 +153,7 @@ const Soal = () => {
   //   });
   //   setSessions(updatedSessions);
   // };
-  const handleAnswerChange = (sessionId, questionId, answer, answer_id) => {
+  const handleAnswerChange = async (sessionId, questionId, answer, answer_id) => {
     const formatAttemptAnswer = {
       attempt_id: dataAttempt.id,
       question_id: questionId,
@@ -173,7 +173,7 @@ const Soal = () => {
     setSessions(updatedSessions);
 
     // Kirim data ke server tanpa menunggu
-    apiClient
+    await apiClient
       .post('/attempt/answer', formatAttemptAnswer)
       .then((response) => console.log('API Response:', response))
       .catch((error) => console.error('API Error:', error));
