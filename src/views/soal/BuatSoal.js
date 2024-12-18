@@ -3,9 +3,7 @@ import { Row, Col, Card, Form, Button, InputGroup, Modal } from 'react-bootstrap
 import apiClient from '../../utils/apiclient';
 import { useLocation } from 'react-router-dom';
 
-
 const BuatSoal = () => {
-
   const location = useLocation();
   const testState = location.state;
 
@@ -13,66 +11,57 @@ const BuatSoal = () => {
   const audioInputRef = useRef(null);
 
   const [fileType, setFileType] = useState('audio'); // State untuk menentukan tipe file
-  
-  const [isLoading, setIsLoading] = useState(false)
+
+  const [isLoading, setIsLoading] = useState(false);
   const [showModalUpload, setShowModalUpload] = useState(false);
 
-
-  console.log('State from navigate:', testState)
-
+  console.log('State from navigate:', testState);
 
   const fetchData = async () => {
     try {
-      
-      const data = await apiClient.get('/question/test_id/' + testState.test_id)
-      const dataSoal = data.data.data
-      const newFormatSoals = []
+      const data = await apiClient.get('/question/test_id/' + testState.test_id);
+      const dataSoal = data.data.data;
+      const newFormatSoals = [];
       for (const soall of dataSoal) {
-        const formatOpti = []
+        const formatOpti = [];
         for (const opti of soall.answer_options) {
-          formatOpti.push(opti.content_answer)
+          formatOpti.push(opti.content_answer);
         }
         newFormatSoals.push({
           ...soall,
-          option_text : formatOpti
-        })
+          option_text: formatOpti
+        });
       }
-      
-      setSoals(newFormatSoals)
-      console.log("slasdih", newFormatSoals)
 
-      if (data.data.data == null)  {
-      setSoals([])
+      setSoals(newFormatSoals);
+      console.log('slasdih', newFormatSoals);
+
+      if (data.data.data == null) {
+        setSoals([]);
       }
-      console.log(soals)
-      console.log(data)
+      console.log(soals);
+      console.log(data);
     } catch (error) {
-      setSoals([])
+      setSoals([]);
     }
+  };
 
-    
-  }
-  
-  useEffect(()=> {
-    fetchData()
-  }, [])
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-
-
-
-  
   const [soal, setSoal] = useState({
     test_id: testState.test_id,
     content_question: '', // Ganti 'text' menjadi 'content_question'
     option_text: ['', '', '', ''],
-    answer_options : [],
+    answer_options: [],
     correctOption: null, // Menyimpan indeks jawaban yang benar
     audio_url: null, // Ganti 'audio' menjadi 'audio_url'
     // audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Ganti 'audio' menjadi 'audio_url'
-    
+
     image_url: null, // Menambahkan image_url
     question_number: 0,
-    question_type: 'Listening', // Ganti 'type' menjadi 'question_type'
+    question_type: 'Listening' // Ganti 'type' menjadi 'question_type'
   });
   const [soals, setSoals] = useState([]); // Daftar soal
   const [isEdit, setIsEdit] = useState(false); // Menandakan jika sedang mengedit
@@ -108,7 +97,7 @@ const BuatSoal = () => {
     if (file) {
       try {
         // Create FormData to upload the file
-        setIsLoading(true)
+        setIsLoading(true);
         const formData = new FormData();
         formData.append('file', file);
 
@@ -121,8 +110,8 @@ const BuatSoal = () => {
 
         // Set the returned URL to audio_url
         setShowModalUpload(true); // Show success modal
-        setSoal({ 
-          ...soal, 
+        setSoal({
+          ...soal,
           audio_url: uploadResponse.data.data.file // Assuming the server returns the URL of the uploaded file
         });
       } catch (error) {
@@ -137,13 +126,12 @@ const BuatSoal = () => {
     setIsLoading(false);
   };
 
-
   const handleAddImage = async (e) => {
     const file = e.target.files[0];
     if (file) {
       try {
         // Create FormData to upload the file
-        setIsLoading(true)
+        setIsLoading(true);
         const formData = new FormData();
         formData.append('file', file);
 
@@ -154,16 +142,15 @@ const BuatSoal = () => {
           }
         });
 
-        console.log("rseponsedsdsdsdssss", uploadResponse.data.data.file)
+        console.log('rseponsedsdsdsdssss', uploadResponse.data.data.file);
         // Set the returned URL to image_url
         setShowModalUpload(true); // Show success modal
-        setSoal({ 
-          ...soal, 
+        setSoal({
+          ...soal,
           image_url: uploadResponse.data.data.file // Assuming the server returns the URL of the uploaded file
         });
 
-
-        console.log("soalllll", soal)
+        console.log('soalllll', soal);
       } catch (error) {
         console.error('Image upload failed:', error);
         alert('Failed to upload image file');
@@ -230,7 +217,7 @@ const BuatSoal = () => {
   //       console.log(response.data)
   //       // Redirect or do something after successful login
   //         // setTableData([...tableData, newEntry]);
-  //         setSoal({ 
+  //         setSoal({
   //           test_code: 'nanti dari state yang halaman test akan mengisi ini',
   //           test_id : testState.test_id,
   //           content_question: '', // Ganti 'text' menjadi 'content_question'
@@ -251,45 +238,43 @@ const BuatSoal = () => {
   //   }
   // }
 
-
   const handleAddData = async (e) => {
     e.preventDefault();
     if (soal.content_question) {
       try {
         if (isEdit) {
           // Jika sedang dalam mode edit, update soal yang ada
-          const updatedSoals = [...soals];
+          const updatedSoals = [...sortedSoals];
           updatedSoals[editIndex] = soal;
           const response_upd = await apiClient.put('/question_options/' + soal.id, soal);
-          console.log(response_upd, "tidak mauuuuuuuuuuuu")
-          
+          console.log(response_upd, 'tidak mauuuuuuuuuuuu');
         } else {
           const answerOptions = soal.option_text.map((option, i) => ({
             is_correct: i === soal.correctOption ? 1 : 0,
             content_answer: option
           }));
-  
+
           // Prepare the payload
           const payload = {
             ...soal,
             answer_options: answerOptions
           };
-  
+
           // Remove option_text and correctOption before sending
           delete payload.option_text;
           delete payload.correctOption;
-  
+
           // Send the data
           const response = await apiClient.post('/question_options', payload);
-          console.log(response)
+          console.log(response);
         }
-        fetchData()
+        fetchData();
         setIsEdit(false); // Reset mode edit
         setEditIndex(null); // Reset index edit
         // Prepare answer options
 
         // Reset the form
-        setSoal({ 
+        setSoal({
           test_id: testState.test_id,
           content_question: '',
           option_text: ['', '', '', ''],
@@ -298,11 +283,11 @@ const BuatSoal = () => {
           audio_url: null,
           image_url: null,
           question_number: 0,
-          question_type: 'Listening',
+          question_type: 'Listening'
         });
         // Reset input file fields
-        if (imageInputRef.current) imageInputRef.current.value = "";
-        if (audioInputRef.current) audioInputRef.current.value = "";
+        if (imageInputRef.current) imageInputRef.current.value = '';
+        if (audioInputRef.current) audioInputRef.current.value = '';
 
         // Refresh the data
         fetchData();
@@ -314,9 +299,8 @@ const BuatSoal = () => {
     }
   };
 
-
   const handleEditSoal = (index) => {
-    setSoal(soals[index]);
+    setSoal(sortedSoals[index]);
     setIsEdit(true);
     setEditIndex(index);
   };
@@ -327,11 +311,11 @@ const BuatSoal = () => {
   };
 
   const handleConfirmDelete = async () => {
-    const soal = sortedSoals[deleteIndex]
-    console.log(soals)
+    const soal = sortedSoals[deleteIndex];
+    console.log(soals);
     const response = await apiClient.delete('/question/' + soal.id);
-    console.log(response)
-    fetchData()
+    console.log(response);
+    fetchData();
     setShowModal(false); // Menutup modal
     setDeleteIndex(null); // Reset index delete
   };
@@ -346,20 +330,20 @@ const BuatSoal = () => {
 
   // Menghitung jumlah soal berdasarkan tipe
   const countSoalByType = (type) => {
-    return soals.filter(soal => soal.question_type === type).length;
+    return soals.filter((soal) => soal.question_type === type).length;
   };
 
   return (
     <React.Fragment>
       <Row>
         <Col sm={12}>
-          <Card className='text-unmuted'>
+          <Card className="text-unmuted">
             <Card.Header>
               <Card.Title as="h5">Buat Soal</Card.Title>
             </Card.Header>
             <Card.Body>
               <Form>
-                <Form.Group controlId="formBasicContentQuestion" className='mb-3'>
+                <Form.Group controlId="formBasicContentQuestion" className="mb-3">
                   <Form.Label>Soal</Form.Label>
                   <Form.Control
                     as="textarea"
@@ -370,7 +354,7 @@ const BuatSoal = () => {
                   />
                 </Form.Group>
 
-                <Form.Group controlId="formBasicOptions" className='mb-3'>
+                <Form.Group controlId="formBasicOptions" className="mb-3">
                   <Form.Label>Opsi Jawaban</Form.Label>
                   {soal.option_text.map((option, index) => (
                     <InputGroup className="mb-3" key={index}>
@@ -380,19 +364,12 @@ const BuatSoal = () => {
                         onChange={(e) => handleOptionChange(index, e)}
                         placeholder={`Opsi ${index + 1}`}
                       />
-                      <Button
-                        variant="outline-danger"
-                        onClick={() => handleRemoveOption(index)}
-                        disabled={soal.option_text.length <= 2}
-                      >
+                      <Button variant="outline-danger" onClick={() => handleRemoveOption(index)} disabled={soal.option_text.length <= 2}>
                         Hapus
                       </Button>
                       <InputGroup.Text>
-                        Benar <input
-                          type="radio"
-                          checked={soal.correctOption === index}
-                          onChange={() => handleCorrectOptionChange(index)}
-                        />
+                        Benar{' '}
+                        <input type="radio" checked={soal.correctOption === index} onChange={() => handleCorrectOptionChange(index)} />
                       </InputGroup.Text>
                     </InputGroup>
                   ))}
@@ -401,8 +378,6 @@ const BuatSoal = () => {
                   </Button>
                 </Form.Group>
 
-
-
                 {/* Input untuk upload file */}
                 <Form.Group controlId="formBasicFile">
                   <Form.Label>{fileType === 'audio' ? 'Audio Soal' : 'Gambar Soal'}</Form.Label>
@@ -410,14 +385,13 @@ const BuatSoal = () => {
                     type="file"
                     accept={fileType === 'audio' ? 'audio/*' : 'image/*'}
                     ref={audioInputRef}
-                    disabled = {isLoading}
+                    disabled={isLoading}
                     onChange={handleAddAudio}
                   />
                 </Form.Group>
 
-                
-                  {/* Switch untuk memilih tipe file */}
-                  <Form.Group controlId="formFileType">
+                {/* Switch untuk memilih tipe file */}
+                <Form.Group controlId="formFileType">
                   {/* <Form.Label>Pilih Tipe File</Form.Label> */}
                   <div className="form-switch">
                     <input
@@ -438,7 +412,7 @@ const BuatSoal = () => {
                   <Form.Control
                     type="file"
                     accept="image/*"
-                    disabled = {isLoading}
+                    disabled={isLoading}
                     ref={imageInputRef}
                     onChange={handleAddImage} // Menambahkan gambar
                   />
@@ -458,7 +432,7 @@ const BuatSoal = () => {
                   </Form.Control>
                 </Form.Group>
 
-                <Form.Group controlId="formBasicPart" className='mb-3'>
+                <Form.Group controlId="formBasicPart" className="mb-3">
                   <Form.Label>Nomor</Form.Label>
                   <Form.Control
                     type="number"
@@ -470,9 +444,9 @@ const BuatSoal = () => {
 
                 <div className="d-flex justify-content-between mt-4">
                   <form onSubmit={handleAddData}>
-                  <Button disabled={isLoading} variant="primary" type='submit' onClick={handleAddData}>
-                    {isEdit ? 'Update Soal' : 'Tambah Soal'}
-                  </Button>
+                    <Button disabled={isLoading} variant="primary" type="submit" onClick={handleAddData}>
+                      {isEdit ? 'Update Soal' : 'Tambah Soal'}
+                    </Button>
                   </form>
                 </div>
               </Form>
@@ -504,51 +478,41 @@ const BuatSoal = () => {
             </Card.Header>
             <Card.Body>
               <ul>
-              {(soals || soals.length > 0) ? (
-                sortedSoals.map((item, index) => (
-                  <li key={index}>
-                    <div>
-                      <strong>{item.content_question}</strong>
-                      <br />
-                      Tipe: {item.question_type}, Nomor: {item.question_number}
-                      <br />
-                      Opsi Jawaban: {item.option_text.join(', ')}
-                      <br />
-                      {item.audio_url && (
-                        /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(item.audio_url) ? (
-                          <img
-                            src={item.audio_url}
-                            alt="Question related"
-                            className="img-fluid mb-3"
-                          />
-                        ) : (
-                          <audio controls className="mb-3">
-                            <source src={item.audio_url} type="audio/mpeg" />
-                            <track
-                              kind="captions"
-                              srcLang="en"
-                              label="English captions"
-                            />
-                            Your browser does not support the audio element.
-                          </audio>
-                        )
-                      )}
-                      {item.image_url && <img src={item.image_url} alt="Gambar soal" className="mb-3" />}
-                    </div>
-                    <div>
-                      <Button variant="outline-warning" onClick={() => handleEditSoal(index)}>
-                        Edit
-                      </Button>
-                      <Button variant="outline-danger" onClick={() => handleDeleteSoal(index)}>
-                        Hapus
-                      </Button>
-                    </div>
-                  </li>
-                ))
-              ) : (
-                <p>No data available</p>
-              )}
-
+                {soals || soals.length > 0 ? (
+                  sortedSoals.map((item, index) => (
+                    <li key={index}>
+                      <div>
+                        <strong>{item.content_question}</strong>
+                        <br />
+                        Tipe: {item.question_type}, Nomor: {item.question_number}
+                        <br />
+                        Opsi Jawaban: {item.option_text.join(', ')}
+                        <br />
+                        {item.audio_url &&
+                          (/\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(item.audio_url) ? (
+                            <img src={item.audio_url} alt="Question related" className="img-fluid mb-3" />
+                          ) : (
+                            <audio controls className="mb-3">
+                              <source src={item.audio_url} type="audio/mpeg" />
+                              <track kind="captions" srcLang="en" label="English captions" />
+                              Your browser does not support the audio element.
+                            </audio>
+                          ))}
+                        {item.image_url && <img src={item.image_url} alt="Gambar soal" className="mb-3" />}
+                      </div>
+                      <div>
+                        <Button variant="outline-warning" onClick={() => handleEditSoal(index)}>
+                          Edit
+                        </Button>
+                        <Button variant="outline-danger" onClick={() => handleDeleteSoal(index)}>
+                          Hapus
+                        </Button>
+                      </div>
+                    </li>
+                  ))
+                ) : (
+                  <p>No data available</p>
+                )}
               </ul>
             </Card.Body>
           </Card>
