@@ -95,12 +95,11 @@ const Soal = () => {
   const getScore = async () => {
     try {
       const data = await apiClient.get(`/attempt/score/${dataAttempt.id}`);
-      setDataAttempt(data.data.data);
       console.log(dataAttempt, 'scorererrererer');
 
       const newScore = Math.floor(dataAttempt.score / 100) * 100;
 
-      setDataAttempt({ ...dataAttempt, score: newScore });
+      setDataAttempt({ ...data.data.data, score: newScore });
       setShowModal(true);
     } catch (error) {
       console.log('gagal ambil skor');
