@@ -179,7 +179,7 @@ const InputTestAdmin = () => {
                 Buat Soal
               </Button>
               <Button variant="secondary" onClick={handleListNavigation}>
-                List Soal
+                List User dalam Test
               </Button>
             </div>
           ) : modalType === 'delete' ? (
