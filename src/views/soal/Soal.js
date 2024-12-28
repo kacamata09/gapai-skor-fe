@@ -159,6 +159,7 @@ const Soal = () => {
       selected_answer_option_id: answer_id
     };
 
+    await apiClient.get(`/attempt/score/${dataAttempt.id}`)
     // Update state terlebih dahulu
     const updatedSessions = sessions.map((session) => {
       if (session.id === sessionId) {

@@ -35,13 +35,13 @@ const routes = [
     exact: 'true',
     path: '/login',
     element: lazy(() => import('./views/auth/signin/SignIn1')),
-    guard: PublicGuard, // Hanya bisa diakses jika belum login
+    guard: PublicGuard // Hanya bisa diakses jika belum login
   },
   {
     exact: 'true',
     path: '/register',
     element: lazy(() => import('./views/auth/signup/SignUp1')),
-    guard: PublicGuard, // Hanya bisa diakses jika belum login
+    guard: PublicGuard // Hanya bisa diakses jika belum login
   },
   {
     path: '*',
@@ -52,6 +52,11 @@ const routes = [
         exact: 'true',
         path: '/admin_soal',
         element: lazy(() => import('./views/soal/BuatSoal'))
+      },
+      {
+        exact: 'true',
+        path: '/list_attempt_user',
+        element: lazy(() => import('./views/soal/ListUserInTest'))
       },
       {
         exact: 'true',
@@ -160,4 +165,3 @@ const routes = [
 ];
 
 export default routes;
-

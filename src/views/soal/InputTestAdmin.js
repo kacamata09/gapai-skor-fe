@@ -98,6 +98,11 @@ const InputTestAdmin = () => {
     navigate('/admin_soal', { state: { test_id: selectedRow.id } });
   };
 
+  // Navigasi ke halaman list soal
+  const handleListNavigation = () => {
+    navigate('/list_attempt_user', { state: { test_id: selectedRow.id } });
+  };
+
   return (
     <React.Fragment>
       <Row>
@@ -172,6 +177,9 @@ const InputTestAdmin = () => {
               <p><strong>Pembuat:</strong> {selectedRow?.created_by}</p>
               <Button variant="primary" onClick={handleDetailNavigation}>
                 Buat Soal
+              </Button>
+              <Button variant="secondary" onClick={handleListNavigation}>
+                List Soal
               </Button>
             </div>
           ) : modalType === 'delete' ? (

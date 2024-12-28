@@ -1,0 +1,30 @@
+/* Gaya untuk kartu saat hover */
+.card {
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+/* Kartu yang lebih kecil dan responsif */
+.row-cols-1,
+.row-cols-sm-2,
+.row-cols-md-4 {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.card-body {
+  padding: 10px;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.container {
+  max-width: 1200px;
+}

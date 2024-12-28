@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Card, Modal, Button, Container, Row, Col } from "react-bootstrap";
-import { apiClient } from "../../utils/apiclient";
-import { getLocalStorageItem } from "../../utils/localStorage";
-
+import React, { useEffect, useState } from 'react';
+import { Card, Modal, Button, Container, Row, Col } from 'react-bootstrap';
+import { apiClient } from '../../utils/apiclient';
+import { getLocalStorageItem } from '../../utils/localStorage';
 
 const TestHistory = () => {
-
-
-  const dataUser = getLocalStorageItem('dataUser')
+  const dataUser = getLocalStorageItem('dataUser');
 
   const [testHistory, setTestHistory] = useState([
     // {
@@ -24,36 +21,30 @@ const TestHistory = () => {
   const fetchData = async () => {
     try {
       const data = await apiClient.get(`/attempt/history/${dataUser.id}`);
-      const dataAttempt = data.data.data
-      console.log(dataAttempt)
-      const newAttempt = []
+      const dataAttempt = data.data.data;
+      console.log(dataAttempt);
+      const newAttempt = [];
       for (const i of dataAttempt) {
-
         const newScore = Math.floor(i.score / 100) * 100;
         const formatDataHistory = {
-            ...i,
-            score : newScore,
-            details: "Listening comprehension with audio.",
-            certificateAvailable: true,
-            certificateLink: "https://example.com/toefl-listening-cert",
-        }
-        newAttempt.push(formatDataHistory)
+          ...i,
+          score: newScore,
+          details: 'Nilai detail anda ditampilkan dalam sertifikat',
+          certificateAvailable: true,
+          certificateLink: 'https://example.com/toefl-listening-cert'
+        };
+        newAttempt.push(formatDataHistory);
       }
-      setTestHistory(newAttempt)
-      console.log(testHistory)
-      
-
+      setTestHistory(newAttempt);
+      console.log(testHistory);
     } catch (error) {
-      console.log(error)
-    } 
+      console.log(error);
+    }
   };
-
 
   useEffect(() => {
     fetchData();
   }, []);
-
-
 
   const [showModal, setShowModal] = useState(false);
   const [selectedTest, setSelectedTest] = useState(null);
@@ -82,9 +73,9 @@ const TestHistory = () => {
           <Col key={test.id} sm={12} md={6} lg={4} className="mb-3">
             <Card
               className="h-100 shadow-sm"
-              style={{ cursor: "pointer", transition: "transform 0.2s" }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+              style={{ cursor: 'pointer', transition: 'transform 0.2s' }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.03)')}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
               onClick={() => handleCardClick(test)}
             >
               <Card.Body>
@@ -122,10 +113,7 @@ const TestHistory = () => {
         </Modal.Body>
         <Modal.Footer>
           {selectedTest && selectedTest.certificateAvailable ? (
-            <Button
-              variant="primary"
-              onClick={() => handleClaimCertificate("https://lynk.id/gapaiskor")}
-            >
+            <Button variant="primary" onClick={() => handleClaimCertificate('https://lynk.id/gapaiskor')}>
               Claim Sertifikat
             </Button>
           ) : (
