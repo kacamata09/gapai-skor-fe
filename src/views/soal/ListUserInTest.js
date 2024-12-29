@@ -4,27 +4,23 @@ import apiClient from '../../utils/apiclient';
 import { useLocation } from 'react-router-dom';
 
 const UserListWithHoverModal = () => {
-    const location = useLocation();
-    const testState = location.state;
+  const location = useLocation();
+  const testState = location.state;
 
-
-    const [users, setUsers] = useState([
-      { id: 1, fullname: 'John Doe', email: 'john@example.com', phone: '+123456789', score: 85 },
-      { id: 2, fullname: 'Jane Smith', email: 'jane@example.com', phone: '+987654321', score: 92 },
-      { id: 3, fullname: 'Mike Johnson', email: 'mike@example.com', phone: '+192837465', score: 78 },
-    ])
+  const [users, setUsers] = useState([
+    { id: 1, fullname: 'Tidak ada user', email: '', phone: '', score: 680 },
+  ]);
 
   const fetchData = async () => {
-  
-  
     try {
       const data = await apiClient.get(`/attempt/user/${testState.test_id}`);
       const dataAttempt = data.data.data;
-      console.log(dataAttempt);
-      setUsers(dataAttempt);
-      console.log(testHistory);
+      if (dataAttempt.length > 0) {
+
+        setUsers(dataAttempt);
+      }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -32,34 +28,56 @@ const UserListWithHoverModal = () => {
     fetchData();
   }, []);
 
-
-
-  const [showModal, setShowModal] = useState(false);
+  const [showUserModal, setShowUserModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');  // State untuk pencarian
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [attemptToDelete, setAttemptToDelete] = useState(null);
 
   const handleCardClick = (user) => {
     setSelectedUser(user);
-    setShowModal(true);
+    setShowUserModal(true);
   };
 
-  const handleCloseModal = () => {
+  const handleCloseUserModal = () => {
     setSelectedUser(null);
-    setShowModal(false);
+    setShowUserModal(false);
   };
 
-  // Filter users berdasarkan nama
+  const handleOpenDeleteModal = (user, e) => {
+    e.stopPropagation();
+    setAttemptToDelete(user);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setAttemptToDelete(null);
+    setShowDeleteModal(false);
+  };
+
+  const handleDeleteUser = async () => {
+    if (attemptToDelete) {
+      try {
+        await apiClient.delete(`/attempt/${attemptToDelete.id}`); // Sesuaikan endpoint API Anda
+        setUsers((prevUsers) => prevUsers.filter((u) => u.id !== attemptToDelete.id));
+        // alert('Pengguna berhasil dihapus.');
+      } catch (error) {
+        console.error(error);
+        alert('Terjadi kesalahan saat menghapus pengguna.');
+      } finally {
+        handleCloseDeleteModal();
+      }
+    }
+  };
+
   const filteredUsers = users.filter((user) =>
-    user.fullname.toLowerCase().includes(searchTerm.toLowerCase())  // Case-insensitive search
+    user.fullname.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <React.Fragment>
-      <h3 className="mb-4">
-        Daftar Pengguna
-      </h3>
+      <h3 className="mb-4">Daftar Pengguna</h3>
 
-      {/* Input Pencarian */}
       <Form.Control
         type="text"
         placeholder="Cari berdasarkan nama..."
@@ -68,7 +86,7 @@ const UserListWithHoverModal = () => {
         className="mb-4"
       />
 
-      <Row className="">
+      <Row>
         {filteredUsers.map((user) => (
           <Col key={user.id} sm={4}>
             <Card
@@ -77,8 +95,8 @@ const UserListWithHoverModal = () => {
                 cursor: 'pointer',
                 transition: 'transform 0.2s, box-shadow 0.2s',
                 borderRadius: '15px',
-                backgroundColor: '#394a64', // Biru dongker pastel
-                color: '#ffffff', // Warna teks putih untuk kontras
+                backgroundColor: '#394a64',
+                color: '#ffffff',
               }}
               onClick={() => handleCardClick(user)}
               onMouseEnter={(e) => {
@@ -96,7 +114,7 @@ const UserListWithHoverModal = () => {
                     style={{
                       width: '50px',
                       height: '50px',
-                      backgroundColor: '#57677b', // Warna lebih terang untuk lingkaran
+                      backgroundColor: '#57677b',
                       borderRadius: '50%',
                       display: 'flex',
                       alignItems: 'center',
@@ -109,24 +127,21 @@ const UserListWithHoverModal = () => {
                     {user.fullname.charAt(0)}
                   </div>
                 </Col>
-                <Col xs={8}>
+                <Col xs={6}>
                   <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#ffffff' }}>
                     {user.fullname}
                   </div>
                   <div style={{ fontSize: '14px', color: '#d1d9e6' }}>
-                    Score: {user.score} {/* Menampilkan score bukan email */}
+                    Score: {user.score}
                   </div>
                 </Col>
-                <Col xs={2} className="text-end">
-                  <div
-                    style={{
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      color: '#d1d9e6',
-                    }}
+                <Col xs={4} className="text-end">
+                  <Button className='feather icon-trash'
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={(e) => handleOpenDeleteModal(user, e)}
                   >
-                    User
-                  </div>
+                  </Button>
                 </Col>
               </Row>
             </Card>
@@ -134,8 +149,7 @@ const UserListWithHoverModal = () => {
         ))}
       </Row>
 
-      {/* Modal */}
-      <Modal show={showModal} onHide={handleCloseModal} centered>
+      <Modal show={showUserModal} onHide={handleCloseUserModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>Detail Pengguna</Modal.Title>
         </Modal.Header>
@@ -152,12 +166,12 @@ const UserListWithHoverModal = () => {
                 <strong>Telepon:</strong> {selectedUser.phone}
               </p>
               <p>
-                <strong>Score:</strong> {selectedUser.score} {/* Menampilkan score di modal */}
+                <strong>Score:</strong> {selectedUser.score}
               </p>
             </div>
           )}
         </Modal.Body>
-        <Modal.Footer className="modal-footer">
+        <Modal.Footer>
           <Button
             variant="success"
             onClick={() =>
@@ -173,6 +187,23 @@ const UserListWithHoverModal = () => {
             }
           >
             Kirim Email
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Konfirmasi Penghapusan</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Apakah Anda yakin ingin menghapus pengguna {attemptToDelete?.fullname}?</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDeleteModal}>
+            Batal
+          </Button>
+          <Button variant="danger" onClick={handleDeleteUser}>
+            Hapus
           </Button>
         </Modal.Footer>
       </Modal>
